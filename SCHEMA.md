@@ -38,6 +38,27 @@ created_at timestamptz default now()
 updated_at timestamptz default now()
 ```
 
+## shipment_locations (history + current position)
+```sql
+id uuid primary key default gen_random_uuid()
+shipment_id uuid references shipments on delete cascade
+latitude numeric not null
+longitude numeric not null
+timestamp timestamptz default now()
+speed_kmh numeric default 0 -- for realism
+status text -- snapshot of status at this point
+```
+
+## shipment_events (timeline)
+```sql
+id uuid primary key default gen_random_uuid()
+shipment_id uuid references shipments on delete cascade
+status text not null
+message text -- e.g. "Package picked up", "Delayed due to traffic"
+created_at timestamptz default now()
+created_by uuid references profiles
+```
+
 ## Indexes & Constraints
 
 - Index on shipments(tracking_number)

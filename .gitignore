@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+
+# Next.js build output and cache
+.next/
+out/
+build/
+
+# Local env files (extremely important to ignore!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Supabase directories to ignore
+supabase/.temp/
+supabase/temp_payload*.json
+
+# Agent portable brain files (personal local memory and keys)
+.agent/
+
+# OS/System files
+.DS_Store
+Thumbs.db
+
+# Diagnostic logs and lock files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
