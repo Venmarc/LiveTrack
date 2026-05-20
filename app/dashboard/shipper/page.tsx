@@ -229,7 +229,7 @@ export default async function ShipperDashboard() {
                         {getStatusBadge(shipment.status)}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Link href={`/dashboard/shipper/shipments/${shipment.id}`} className="text-blue-400 hover:text-blue-300 font-semibold text-xs cursor-pointer">
+                        <Link href={`/dashboard/shipper/shipments/${shipment.tracking_number}`} className="text-blue-400 hover:text-blue-300 font-semibold text-xs cursor-pointer">
                           View
                         </Link>
                       </td>

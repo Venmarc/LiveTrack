@@ -86,9 +86,9 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
       case 'in_transit':
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-950/40 text-emerald-450 border border-emerald-500/20">In Transit</span>;
       case 'delivered':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-950/40 text-green-450 border border-green-500/20">Delivered</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-950/40 text-green-455 border border-green-500/20">Delivered</span>;
       case 'delayed':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-450 border border-amber-500/20">Delayed</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-455 border border-amber-500/20">Delayed</span>;
       case 'cancelled':
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-950/40 text-rose-455 border border-rose-500/20">Cancelled</span>;
       default:
@@ -260,7 +260,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <img
                     src={shipment.driver.avatar_url}
                     alt={shipment.driver.full_name || 'Courier'}
-                    className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 p-1"
+                    className="h-14 w-14 rounded-2xl bg-zinc-850 border border-zinc-800 p-1"
                   />
                 ) : (
                   <div className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-850 flex items-center justify-center text-zinc-500">
@@ -311,7 +311,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   onClick={() => setFilter('milestones')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 cursor-pointer ${
                     filter === 'milestones'
-                      ? 'bg-emerald-650 border-emerald-600 text-white shadow-md shadow-emerald-650/10'
+                      ? 'bg-emerald-650 border-emerald-650 text-white shadow-md shadow-emerald-650/10'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-300'
                   }`}
                 >
