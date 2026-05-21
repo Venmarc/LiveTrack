@@ -105,7 +105,36 @@ export async function claimShipmentAction(shipmentId: string) {
 
     const supabase = createSupabaseServiceClient();
 
-    // 1. Check if the shipment exists and is unclaimed
+    // 1. Check driver's active shipments cap
+    const { data: driverProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('max_active_shipments')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching driver profile for limit check:', profileError);
+      return { error: 'Failed to verify driver profile.' };
+    }
+
+    const maxActive = driverProfile?.max_active_shipments ?? 5;
+
+    const { count: activeCount, error: countError } = await supabase
+      .from('shipments')
+      .select('id', { count: 'exact', head: true })
+      .eq('driver_id', user.id)
+      .not('status', 'in', '("delivered","cancelled")');
+
+    if (countError) {
+      console.error('Error checking driver active shipments count:', countError);
+      return { error: 'Failed to verify active deliveries count.' };
+    }
+
+    if (activeCount !== null && activeCount >= maxActive) {
+      return { error: `You have reached your limit of ${maxActive} active shipments. Please complete or deliver your active runs before claiming more.` };
+    }
+
+    // 2. Check if the shipment exists and is unclaimed
     const { data: shipment, error: fetchError } = await supabase
       .from('shipments')
       .select('status, driver_id, tracking_number')

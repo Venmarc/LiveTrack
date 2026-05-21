@@ -1,4 +1,4 @@
-PROJECT.md
+**PROJECT.md**
 # LiveTrack - Real-Time Package Tracker
 
 ## Project Overview
@@ -31,37 +31,19 @@ Production-grade logistics demo showing real-time tracking, multi-role workflows
 - Simulation layer that can later be swapped for real carrier APIs
 - Max 5 shipments per user for demo sanity
 
-## Phases (Strict — no cramming)
+## Development Phases
 
-**Phase 1: Foundation**
-- Repo setup, Clerk auth + role assignment (metadata)
-- Supabase schema (shipments, users, locations/history)
-- Role-based middleware + dashboard routing
-- Basic data models + Zod schemas
-- Mock data seeding (max 5 shipments/user)
-- Simple dashboard skeletons per role
+See **PHASES.md** for detailed deliverables, success criteria, and quality gates per phase.
 
-**Phase 2: Core Flows**
-- Shipper: Create shipment (single form first — origin, dest, recipient details)
-- Basic shipment detail page (no map yet)
-- Driver: List of assigned packages + simple status update
-- Public tracking page `/tracking/[number]`
-- Status timeline (static for now)
+**High-level summary:**
+- **Phase 0**: Setup & Foundation (Auth + Schema + Skeletons)
+- **Phase 1**: Core Data & Shipment CRUD
+- **Phase 2**: Driver Flows + Assignment
+- **Phase 3**: Live Map + Simulation Engine (the magic)
+- **Phase 4**: Polish & Demo Readiness
+- **Phase 5**: Stretch goals (post-MVP)
 
-**Phase 3: The Magic (Live Map + Simulation)**
-- Leaflet integration on tracking + driver pages
-- Mock GPS simulation engine (`lib/simulation.ts`)
-- Real-time updates via Supabase Realtime (status + position)
-- Moving marker + basic progress
-- Clean up on unmount, no memory leaks
-
-**Phase 4: Polish & Demo Power**
-- Estimated delivery + simple delay simulation
-- Better UX (skeletons, loading states, error handling)
-- Admin light view (optional)
-- Responsive (especially map on mobile)
-- Final performance + Lighthouse
-- Demo script + "Demo Mode" banner
+No phase may bleed into the next. Complete and test each phase fully before moving forward.
 
 ## Folder Structure (Start lean)
 
@@ -90,6 +72,7 @@ This PROJECT.md is the single source of truth. All other files exist to support 
 - **SCHEMA.md** — Database schema + RLS
 - **DECISIONS.md** — Tech stack & versions, simulation engine, and all major decisions/rationale (updated regularly)
 - **CONSTITUTION.md** — Non-negotiable rules and quality standards
+- **PHASES.md** — for detailed deliverables, timelines, and success criteria per phase.
 - **NOTES.md** — Personal scratchpad, current phase status, future ideas, lessons
 - **SCHEMA.md, DECISIONS.md, CONSTITUTION.md** must be referenced by the AI/agent in every major planning or implementation response.
 

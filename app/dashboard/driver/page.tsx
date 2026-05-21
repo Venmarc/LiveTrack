@@ -20,6 +20,15 @@ export default async function DriverDashboard() {
 
   const supabase = await createSupabaseServerClient();
 
+  // Fetch driver profile limit
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('max_active_shipments')
+    .eq('id', user.id)
+    .single();
+
+  const maxActiveLimit = profile?.max_active_shipments ?? 5;
+
   // 1. Fetch shipments assigned to this driver
   const { data: myShipments, error: myError } = await supabase
     .from('shipments')
@@ -137,6 +146,7 @@ export default async function DriverDashboard() {
         <DriverDashboardClient 
           initialMyShipments={myShipmentList as any} 
           initialAvailableShipments={availableShipmentList as any} 
+          maxActiveShipments={maxActiveLimit}
         />
       </main>
     </div>

@@ -51,11 +51,13 @@ interface ShipmentData {
 interface DriverDashboardClientProps {
   initialMyShipments: ShipmentData[];
   initialAvailableShipments: ShipmentData[];
+  maxActiveShipments: number;
 }
 
 export default function DriverDashboardClient({
   initialMyShipments,
   initialAvailableShipments,
+  maxActiveShipments,
 }: DriverDashboardClientProps) {
   const [activeTab, setActiveTab] = useState<'active' | 'available' | 'history'>('active');
   const [isPending, startTransition] = useTransition();
@@ -68,6 +70,8 @@ export default function DriverDashboardClient({
   const deliveredMyShipments = initialMyShipments.filter(
     (s) => s.status === 'delivered' || s.status === 'cancelled'
   );
+
+  const isLimitReached = activeMyShipments.length >= maxActiveShipments;
 
   const handleClaim = (shipmentId: string) => {
     setProcessingId(shipmentId);
@@ -306,6 +310,17 @@ export default function DriverDashboardClient({
 
       {activeTab === 'available' && (
         <div className="space-y-4">
+          {isLimitReached && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs flex items-start gap-3">
+              <AlertTriangle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <span className="font-bold text-amber-300">Active Run Limit Reached</span>
+                <p className="text-zinc-400">
+                  You are currently transporting {activeMyShipments.length} active shipments (limit: {maxActiveShipments}). Please deliver or cancel your current deliveries before claiming more jobs.
+                </p>
+              </div>
+            </div>
+          )}
           {initialAvailableShipments.length === 0 ? (
             <div className="p-12 text-center flex flex-col items-center justify-center gap-4 bg-zinc-900/10 rounded-2xl border border-zinc-900">
               <div className="p-4 rounded-full bg-zinc-900 text-zinc-600">
@@ -365,9 +380,13 @@ export default function DriverDashboardClient({
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button
-                              disabled={isPending}
+                              disabled={isPending || isLimitReached}
                               onClick={() => handleClaim(shipment.id)}
-                              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition cursor-pointer"
+                              className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-xs transition ${
+                                isLimitReached
+                                  ? 'bg-zinc-900 border border-zinc-800 text-zinc-500 cursor-not-allowed'
+                                  : 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
+                              }`}
                             >
                               {isClaiming ? (
                                 <Loader2 className="h-3 w-3 animate-spin" />
