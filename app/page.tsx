@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
 import { Package, Truck, Map, ArrowRight, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { TrackingSearch } from '@/components/tracking-search';
 
 export default async function Home() {
   const { userId } = await auth();
@@ -73,16 +74,7 @@ export default async function Home() {
           <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
             Track a Shipment
           </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Enter tracking ID (e.g. LT-12345)"
-              className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-zinc-100 placeholder-zinc-700 font-sans"
-            />
-            <button className="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-sm font-semibold transition cursor-pointer">
-              Track
-            </button>
-          </div>
+          <TrackingSearch />
           <span className="block text-[11px] text-zinc-500">
             * Tracking can be viewed publicly without requiring an authenticated account.
           </span>

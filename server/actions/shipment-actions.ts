@@ -90,3 +90,178 @@ export async function createShipmentAction(input: unknown) {
     return { error: message };
   }
 }
+
+export async function claimShipmentAction(shipmentId: string) {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      return { error: 'Not authenticated. Please sign in.' };
+    }
+
+    const role = (user.publicMetadata as Record<string, unknown>)?.role;
+    if (role !== 'driver') {
+      return { error: 'Unauthorized. Only courier drivers can claim shipments.' };
+    }
+
+    const supabase = createSupabaseServiceClient();
+
+    // 1. Check if the shipment exists and is unclaimed
+    const { data: shipment, error: fetchError } = await supabase
+      .from('shipments')
+      .select('status, driver_id, tracking_number')
+      .eq('id', shipmentId)
+      .single();
+
+    if (fetchError || !shipment) {
+      return { error: 'Shipment not found.' };
+    }
+
+    if (shipment.driver_id) {
+      return { error: 'This shipment has already been claimed by another driver.' };
+    }
+
+    const driverName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Courier Driver';
+
+    // 2. Assign the driver and update status to 'assigned'
+    const { error: updateError } = await supabase
+      .from('shipments')
+      .update({
+        driver_id: user.id,
+        status: 'assigned',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', shipmentId);
+
+    if (updateError) {
+      console.error('Error claiming shipment:', updateError);
+      return { error: `Failed to claim shipment: ${updateError.message}` };
+    }
+
+    // 3. Log timeline event
+    const { error: eventError } = await supabase
+      .from('shipment_events')
+      .insert({
+        shipment_id: shipmentId,
+        status: 'assigned',
+        message: `Courier driver ${driverName} assigned to shipment.`,
+        created_by: user.id,
+      });
+
+    if (eventError) {
+      console.error('Error logging assignment event:', eventError);
+    }
+
+    console.log(`🚚 Driver ${user.id} claimed shipment ${shipment.tracking_number}`);
+
+    revalidatePath('/dashboard/driver');
+    revalidatePath('/dashboard/shipper');
+    return { success: true };
+  } catch (error) {
+    console.error('Error in claimShipmentAction:', error);
+    return { error: error instanceof Error ? error.message : 'An unexpected error occurred.' };
+  }
+}
+
+export async function updateShipmentStatusAction(
+  shipmentId: string,
+  status: 'assigned' | 'picked_up' | 'in_transit' | 'delivered' | 'delayed' | 'cancelled',
+  message?: string
+) {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      return { error: 'Not authenticated. Please sign in.' };
+    }
+
+    const role = (user.publicMetadata as Record<string, unknown>)?.role;
+    if (role !== 'driver') {
+      return { error: 'Unauthorized. Only assigned drivers can update shipment status.' };
+    }
+
+    const supabase = createSupabaseServiceClient();
+
+    // 1. Verify this driver is assigned to the shipment
+    const { data: shipment, error: fetchError } = await supabase
+      .from('shipments')
+      .select('driver_id, tracking_number')
+      .eq('id', shipmentId)
+      .single();
+
+    if (fetchError || !shipment) {
+      return { error: 'Shipment not found.' };
+    }
+
+    if (shipment.driver_id !== user.id) {
+      return { error: 'Unauthorized. You are not the driver assigned to this shipment.' };
+    }
+
+    // 2. Prepare update payload
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatePayload: any = {
+      status,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (status === 'delivered') {
+      updatePayload.actual_delivery = new Date().toISOString();
+    }
+
+    const { error: updateError } = await supabase
+      .from('shipments')
+      .update(updatePayload)
+      .eq('id', shipmentId);
+
+    if (updateError) {
+      console.error('Error updating shipment status:', updateError);
+      return { error: `Failed to update status: ${updateError.message}` };
+    }
+
+    // 3. Log timeline event
+    let eventMessage = message;
+    if (!eventMessage) {
+      switch (status) {
+        case 'picked_up':
+          eventMessage = 'Package picked up at origin location.';
+          break;
+        case 'in_transit':
+          eventMessage = 'Package is in transit.';
+          break;
+        case 'delivered':
+          eventMessage = 'Package successfully delivered.';
+          break;
+        case 'delayed':
+          eventMessage = 'Package delivery is delayed.';
+          break;
+        case 'cancelled':
+          eventMessage = 'Package delivery cancelled.';
+          break;
+        default:
+          eventMessage = `Package status updated to ${status}.`;
+      }
+    }
+
+    const { error: eventError } = await supabase
+      .from('shipment_events')
+      .insert({
+        shipment_id: shipmentId,
+        status,
+        message: eventMessage,
+        created_by: user.id,
+      });
+
+    if (eventError) {
+      console.error('Error logging status transition event:', eventError);
+    }
+
+    console.log(`✅ Shipment ${shipment.tracking_number} status updated to ${status} by driver ${user.id}`);
+
+    revalidatePath('/dashboard/driver');
+    revalidatePath('/dashboard/shipper');
+    // If we have a tracking page path, revalidate it as well
+    revalidatePath(`/tracking/${shipment.tracking_number}`);
+    return { success: true };
+  } catch (error) {
+    console.error('Error in updateShipmentStatusAction:', error);
+    return { error: error instanceof Error ? error.message : 'An unexpected error occurred.' };
+  }
+}
