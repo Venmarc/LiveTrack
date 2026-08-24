@@ -196,7 +196,7 @@ export default function BookShipmentPage() {
                   className={`px-3 py-1 text-xs font-semibold rounded-md border transition ${
                     originType === 'preset'
                       ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      : 'bg-zinc-900 text-zinc-500 border-zinc-850 hover:text-zinc-300'
+                      : 'bg-zinc-900 text-zinc-500 border-zinc-800 hover:text-zinc-300'
                   }`}
                 >
                   Presets
@@ -207,7 +207,7 @@ export default function BookShipmentPage() {
                   className={`px-3 py-1 text-xs font-semibold rounded-md border transition ${
                     originType === 'custom'
                       ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      : 'bg-zinc-900 text-zinc-500 border-zinc-850 hover:text-zinc-300'
+                      : 'bg-zinc-900 text-zinc-500 border-zinc-800 hover:text-zinc-300'
                   }`}
                 >
                   Custom
@@ -295,7 +295,7 @@ export default function BookShipmentPage() {
                   className={`px-3 py-1 text-xs font-semibold rounded-md border transition ${
                     destType === 'preset'
                       ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      : 'bg-zinc-900 text-zinc-500 border-zinc-850 hover:text-zinc-300'
+                      : 'bg-zinc-900 text-zinc-500 border-zinc-800 hover:text-zinc-300'
                   }`}
                 >
                   Presets
@@ -306,7 +306,7 @@ export default function BookShipmentPage() {
                   className={`px-3 py-1 text-xs font-semibold rounded-md border transition ${
                     destType === 'custom'
                       ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      : 'bg-zinc-900 text-zinc-500 border-zinc-850 hover:text-zinc-300'
+                      : 'bg-zinc-900 text-zinc-500 border-zinc-800 hover:text-zinc-300'
                   }`}
                 >
                   Custom

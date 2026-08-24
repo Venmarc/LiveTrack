@@ -34,12 +34,12 @@ const LiveMap = dynamic(() => import('@/components/map/live-map'), {
 type ShipmentRow = Database['public']['Tables']['shipments']['Row'];
 type ShipmentLocationRow = Database['public']['Tables']['shipment_locations']['Row'];
 
-interface DriverDetails {
+export interface DriverDetails {
   full_name: string | null;
   avatar_url?: string | null;
 }
 
-interface ShipmentData {
+export interface ShipmentData {
   id: string;
   tracking_number: string;
   recipient_name: string;
@@ -64,14 +64,14 @@ interface ShipmentData {
   driver?: DriverDetails | null;
 }
 
-interface TimelineEvent {
+export interface TimelineEvent {
   id: string;
   status: string;
   message: string | null;
   created_at: string;
 }
 
-interface LocationData {
+export interface LocationData {
   latitude: number;
   longitude: number;
   speed_kmh: number;
@@ -201,7 +201,7 @@ export default function TrackingClient({
       case 'delivered':
         return <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">Delivered</span>;
       case 'cancelled':
-        return <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-zinc-805 text-zinc-550 border border-zinc-800">Cancelled</span>;
+        return <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-500 border border-zinc-800">Cancelled</span>;
       default:
         return <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-400">{status}</span>;
     }
@@ -212,7 +212,7 @@ export default function TrackingClient({
       {/* Header */}
       <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/" className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-450 hover:text-white transition cursor-pointer">
+          <Link href="/" className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition cursor-pointer">
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
@@ -243,7 +243,7 @@ export default function TrackingClient({
                 </div>
               </div>
               <div className="flex flex-col sm:items-end gap-1.5">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-550 sm:text-right">Current Status</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500 sm:text-right">Current Status</span>
                 {getStatusBadge(liveShipment.status)}
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function TrackingClient({
                 {/* Foreground Filled Line */}
                 {currentStepIdx >= 0 && (
                   <div 
-                    className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-blue-500 transition-all duration-550" 
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-blue-500 transition-all duration-500" 
                     style={{ width: `${(currentStepIdx / 4) * 100}%` }}
                   />
                 )}
@@ -279,12 +279,12 @@ export default function TrackingClient({
                   return (
                     <div key={step} className="relative z-10 flex flex-col items-center gap-2">
                       <div 
-                        className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-350 ${
+                        className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-300 ${
                           isCompleted 
                             ? 'bg-blue-600 border-blue-500 text-white' 
                             : isCurrent 
                               ? 'bg-zinc-950 border-blue-500 ring-4 ring-blue-500/20 text-blue-400 font-bold' 
-                              : 'bg-zinc-900 border-zinc-850 text-zinc-500'
+                              : 'bg-zinc-900 border-zinc-800 text-zinc-500'
                         }`}
                       >
                         {isCompleted ? (
@@ -295,7 +295,7 @@ export default function TrackingClient({
                       </div>
                       <span 
                         className={`text-[10px] sm:text-xs font-semibold absolute top-8 whitespace-nowrap ${
-                          isCurrent ? 'text-blue-400 font-bold' : isCompleted ? 'text-zinc-300' : 'text-zinc-550'
+                          isCurrent ? 'text-blue-400 font-bold' : isCompleted ? 'text-zinc-300' : 'text-zinc-500'
                         }`}
                       >
                         {stepLabels[step]}
@@ -311,14 +311,14 @@ export default function TrackingClient({
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-950/40 border border-zinc-900">
                 <Calendar className="h-4 w-4 text-zinc-500" />
                 <div>
-                  <span className="block text-[10px] text-zinc-550 font-semibold uppercase">Estimated Delivery</span>
+                  <span className="block text-[10px] text-zinc-500 font-semibold uppercase">Estimated Delivery</span>
                   <span className="text-white font-medium">{formatDate(liveShipment.estimated_delivery)}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-950/40 border border-zinc-900">
                 <CheckCircle2 className="h-4 w-4 text-zinc-500" />
                 <div>
-                  <span className="block text-[10px] text-zinc-550 font-semibold uppercase">Actual Delivery</span>
+                  <span className="block text-[10px] text-zinc-500 font-semibold uppercase">Actual Delivery</span>
                   <span className="text-white font-medium">{formatDate(liveShipment.actual_delivery)}</span>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default function TrackingClient({
             
             <div className="space-y-4 text-xs">
               <div className="space-y-1">
-                <span className="text-[10px] text-zinc-550 font-bold uppercase">Ship From</span>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase">Ship From</span>
                 <div className="font-medium text-white">{liveShipment.origin.address}</div>
                 <div className="text-zinc-500">City: {liveShipment.origin.city || 'N/A'}</div>
               </div>
@@ -370,7 +370,7 @@ export default function TrackingClient({
               <div className="h-px bg-zinc-900" />
               
               <div className="space-y-1">
-                <span className="text-[10px] text-zinc-550 font-bold uppercase">Ship To</span>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase">Ship To</span>
                 <div className="font-medium text-white">{liveShipment.destination.address}</div>
                 <div className="text-zinc-500">City: {liveShipment.destination.city || 'N/A'}</div>
               </div>
@@ -379,7 +379,7 @@ export default function TrackingClient({
                 <>
                   <div className="h-px bg-zinc-900" />
                   <div className="space-y-2">
-                    <span className="text-[10px] text-zinc-550 font-bold uppercase">Assigned Courier</span>
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase">Assigned Courier</span>
                     <div className="flex items-center gap-2.5">
                       <div className="p-1.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-800">
                         <User className="h-4 w-4" />
@@ -397,7 +397,7 @@ export default function TrackingClient({
             <h3 className="font-bold text-white font-outfit border-b border-zinc-900 pb-3">Status Timeline</h3>
             
             {liveEvents.length === 0 ? (
-              <div className="text-center py-6 text-xs text-zinc-550">No events logged yet.</div>
+              <div className="text-center py-6 text-xs text-zinc-500">No events logged yet.</div>
             ) : (
               <div className="relative pl-4 border-l border-zinc-800 space-y-6">
                 {liveEvents.map((event, idx) => {
@@ -409,7 +409,7 @@ export default function TrackingClient({
                         className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full border ${
                           isLatest 
                             ? 'bg-blue-500 border-blue-400 ring-4 ring-blue-500/20' 
-                            : 'bg-zinc-850 border-zinc-800'
+                            : 'bg-zinc-800 border-zinc-800'
                         }`}
                       />
                       
@@ -418,9 +418,9 @@ export default function TrackingClient({
                           <span className={`font-semibold capitalize ${isLatest ? 'text-blue-400' : 'text-zinc-300'}`}>
                             {event.status.replace('_', ' ')}
                           </span>
-                          <span className="text-[10px] text-zinc-550">{formatDate(event.created_at)}</span>
+                          <span className="text-[10px] text-zinc-500">{formatDate(event.created_at)}</span>
                         </div>
-                        <p className="text-zinc-550 leading-relaxed font-sans">{event.message || 'Status transition logged.'}</p>
+                        <p className="text-zinc-500 leading-relaxed font-sans">{event.message || 'Status transition logged.'}</p>
                       </div>
                     </div>
                   );

@@ -1,6 +1,10 @@
 import { createSupabaseServiceClient } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
-import TrackingClient from './tracking-client';
+import TrackingClient, {
+  type ShipmentData,
+  type TimelineEvent,
+  type LocationData,
+} from './tracking-client';
 
 interface RouteParams {
   params: Promise<{ trackingNumber: string }>;
@@ -41,14 +45,10 @@ export default async function PublicTrackingPage({ params }: RouteParams) {
   const latestLocation = locations && locations.length > 0 ? locations[0] : null;
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <TrackingClient 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      shipment={shipment as any} 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      events={(events || []) as any} 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      latestLocation={latestLocation as any}
+    <TrackingClient
+      shipment={shipment as ShipmentData}
+      events={(events || []) as TimelineEvent[]}
+      latestLocation={latestLocation as LocationData | null}
     />
   );
 }

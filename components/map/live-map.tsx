@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -82,55 +82,43 @@ export default function LiveMap({
 }: LiveMapProps) {
   const markerRef = useRef<L.Marker | null>(null);
   const targetRef = useRef<L.LatLng | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const positionCbRef = useRef(onPositionChange);
   const statusRef = useRef(status);
-  const initialRef = useRef<L.LatLng>(L.latLng(initialPosition.lat, initialPosition.lng));
-  const targetRefRef = useRef<{ lat: number; lng: number }>({
-    lat: initialPosition.lat,
-    lng: initialPosition.lng,
+
+  useEffect(() => {
+    positionCbRef.current = onPositionChange;
+  });
+  useEffect(() => {
+    statusRef.current = status;
   });
 
-  positionCbRef.current = onPositionChange;
-  statusRef.current = status;
+  // Continuous animation loop. It runs for the whole mount and only moves the
+  // marker when a broadcast target is present, so it is cheap when idle.
+  useEffect(() => {
+    let rafId: number | null = null;
 
-  const stopAnimation = useCallback(() => {
-    if (rafRef.current !== null) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
+    const tick = () => {
+      const marker = markerRef.current;
+      const target = targetRef.current;
+      if (marker && target) {
+        const current = marker.getLatLng();
+        const distance = current.distanceTo(target);
+        if (distance >= 1) {
+          // Exponential ease-out: cover a fixed fraction of remaining distance.
+          const next = current.toBounds(distance * 0.12).getCenter();
+          marker.setLatLng(next);
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
-
-  const animateStep = useCallback(() => {
-    const marker = markerRef.current;
-    const target = targetRef.current;
-    if (!marker || !target) {
-      rafRef.current = null;
-      return;
-    }
-
-    const current = marker.getLatLng();
-    const distance = current.distanceTo(target);
-
-    // Snap when within a metre so the marker lands exactly on the broadcast point.
-    if (distance < 1) {
-      marker.setLatLng(target);
-      rafRef.current = null;
-      return;
-    }
-
-    // Exponential ease-out: move a fixed fraction of the remaining distance per frame.
-    const next = current.toBounds(distance * 0.12).getCenter();
-    marker.setLatLng(next);
-    rafRef.current = requestAnimationFrame(animateStep);
-  }, []);
-
-  const ensureAnimation = useCallback(() => {
-    if (rafRef.current === null) {
-      rafRef.current = requestAnimationFrame(animateStep);
-    }
-  }, [animateStep]);
 
   // Realtime subscription to shipment_locations INSERTs.
   useEffect(() => {
@@ -148,9 +136,7 @@ export default function LiveMap({
           const row = payload.new as ShipmentLocationRow;
           const position = { lat: Number(row.latitude), lng: Number(row.longitude) };
           targetRef.current = L.latLng(position.lat, position.lng);
-          targetRefRef.current = position;
           positionCbRef.current?.(position, Number(row.speed_kmh ?? 0), row.status ?? null);
-          ensureAnimation();
         }
       )
       .subscribe();
@@ -158,7 +144,7 @@ export default function LiveMap({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [shipmentId, ensureAnimation]);
+  }, [shipmentId]);
 
   // Polling fallback so the marker still moves if Realtime is unavailable
   // (e.g. a long-running serverless process was killed mid-route).
@@ -177,26 +163,18 @@ export default function LiveMap({
         if (data) {
           const position = { lat: Number(data.latitude), lng: Number(data.longitude) };
           targetRef.current = L.latLng(position.lat, position.lng);
-          targetRefRef.current = position;
           positionCbRef.current?.(position, Number(data.speed_kmh ?? 0), data.status ?? null);
-          ensureAnimation();
         }
       } catch {
         // Ignore transient network failures; the next poll retries.
       }
     };
 
-    pollRef.current = setInterval(fetchLatest, 8000);
+    const pollId = setInterval(fetchLatest, 8000);
     return () => {
-      if (pollRef.current) {
-        clearInterval(pollRef.current);
-        pollRef.current = null;
-      }
+      clearInterval(pollId);
     };
-  }, [shipmentId, status, ensureAnimation]);
-
-  // Stop the animation loop on unmount (no memory leaks).
-  useEffect(() => stopAnimation, [stopAnimation]);
+  }, [shipmentId, status]);
 
   const routeLine: [number, number][] = [
     [origin.lat, origin.lng],
@@ -215,23 +193,21 @@ export default function LiveMap({
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
       <FitBounds origin={origin} destination={destination} />
-      <Polyline positions={routeLine} pathOptions={{ color: '#3b82f6', weight: 3, dashArray: '8 8', opacity: 0.7 }} />
+      <Polyline
+        positions={routeLine}
+        pathOptions={{ color: '#3b82f6', weight: 3, dashArray: '8 8', opacity: 0.7 }}
+      />
       <Marker position={[origin.lat, origin.lng]} icon={originIcon} interactive={false} />
       <Marker position={[destination.lat, destination.lng]} icon={destinationIcon} interactive={false} />
       <Marker
-        ref={(marker) => {
-          markerRef.current = marker;
-          if (marker) {
-            marker.setLatLng(initialRef.current);
-          }
-        }}
+        ref={markerRef}
         position={[initialPosition.lat, initialPosition.lng]}
         icon={truckIcon}
         zIndexOffset={1000}
       >
         <Popup>
           <span className="text-xs font-semibold text-zinc-900">
-            {statusRef.current === 'delivered' ? 'Delivered' : 'Live position'}
+            {status === 'delivered' ? 'Delivered' : 'Live position'}
           </span>
         </Popup>
       </Marker>

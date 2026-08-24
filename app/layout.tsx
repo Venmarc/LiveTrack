@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
+import DemoBanner from "@/components/demo-banner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,7 +32,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100 font-sans">
         <Providers>
-          <main className="grow flex flex-col">{children}</main>
+          <main className="grow flex flex-col">
+            <DemoBanner />
+            {children}
+          </main>
           <Toaster richColors position="top-center" theme="dark" />
         </Providers>
       </body>

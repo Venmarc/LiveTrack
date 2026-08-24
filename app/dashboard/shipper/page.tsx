@@ -6,6 +6,7 @@ import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { SeedButton } from '@/components/seed-button';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
+import Logo from '@/components/logo';
 
 export default async function ShipperDashboard() {
   // Ensure profile is synced in Supabase
@@ -95,9 +96,7 @@ export default async function ShipperDashboard() {
       {/* Header */}
       <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">
-            LiveTrack
-          </div>
+          <Logo />
           <div>
             <h1 className="text-xl font-bold font-outfit text-white leading-none">Shipper Portal</h1>
             <p className="text-xs text-zinc-500 mt-1">Manage outbound packages and logistics flows</p>

@@ -85,15 +85,15 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
       case 'picked_up':
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-950/40 text-cyan-400 border border-cyan-500/20">Picked Up</span>;
       case 'in_transit':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-950/40 text-emerald-450 border border-emerald-500/20">In Transit</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-950/40 text-emerald-500 border border-emerald-500/20">In Transit</span>;
       case 'delivered':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-950/40 text-green-455 border border-green-500/20">Delivered</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-950/40 text-green-500 border border-green-500/20">Delivered</span>;
       case 'delayed':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-455 border border-amber-500/20">Delayed</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-500 border border-amber-500/20">Delayed</span>;
       case 'cancelled':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-950/40 text-rose-455 border border-rose-500/20">Cancelled</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-950/40 text-rose-500 border border-rose-500/20">Cancelled</span>;
       default:
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-zinc-850 text-zinc-400 border border-zinc-800">{status}</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-400 border border-zinc-800">{status}</span>;
     }
   };
 
@@ -264,10 +264,10 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <img
                     src={shipment.driver.avatar_url}
                     alt={shipment.driver.full_name || 'Courier'}
-                    className="h-14 w-14 rounded-2xl bg-zinc-850 border border-zinc-800 p-1"
+                    className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 p-1"
                   />
                 ) : (
-                  <div className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-850 flex items-center justify-center text-zinc-500">
+                  <div className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-500">
                     <User className="h-6 w-6" />
                   </div>
                 )}
@@ -282,7 +282,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
             ) : (
               <div className="rounded-xl border border-dashed border-zinc-800 p-4 text-center">
                 <p className="text-sm text-zinc-500 italic">No courier assigned yet.</p>
-                <p className="text-xs text-zinc-650 mt-1">Drivers can claim this job from their portal.</p>
+                <p className="text-xs text-zinc-500 mt-1">Drivers can claim this job from their portal.</p>
               </div>
             )}
           </div>
@@ -315,7 +315,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   onClick={() => setFilter('milestones')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 cursor-pointer ${
                     filter === 'milestones'
-                      ? 'bg-emerald-650 border-emerald-650 text-white shadow-md shadow-emerald-650/10'
+                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/10'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-300'
                   }`}
                 >
@@ -326,7 +326,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   onClick={() => setFilter('transit')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 cursor-pointer ${
                     filter === 'transit'
-                      ? 'bg-cyan-650 border-cyan-600 text-white shadow-md shadow-cyan-650/10'
+                      ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-600/10'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-300'
                   }`}
                 >
@@ -337,7 +337,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   onClick={() => setFilter('alerts')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 cursor-pointer ${
                     filter === 'alerts'
-                      ? 'bg-amber-600 border-amber-500 text-white shadow-md shadow-amber-650/10'
+                      ? 'bg-amber-600 border-amber-500 text-white shadow-md shadow-amber-600/10'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-300'
                   }`}
                 >
@@ -355,7 +355,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                     {/* Bullet marker */}
                     <div className="absolute -left-[30px] top-1.5 h-3 w-3 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center">
                       <div className={`h-1 w-1 rounded-full ${
-                        evt.status === 'delayed' ? 'bg-amber-550' :
+                        evt.status === 'delayed' ? 'bg-amber-500' :
                         evt.status === 'cancelled' ? 'bg-rose-500' :
                         evt.status === 'delivered' ? 'bg-green-500' :
                         evt.status === 'in_transit' ? 'bg-emerald-500' :
@@ -366,22 +366,22 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                     <div className="space-y-1">
                       <div className="flex items-center justify-between gap-4">
                         <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                          evt.status === 'delayed' ? 'text-amber-450' :
-                          evt.status === 'cancelled' ? 'text-rose-455' :
-                          evt.status === 'delivered' ? 'text-green-455' :
-                          evt.status === 'in_transit' ? 'text-emerald-450' :
+                          evt.status === 'delayed' ? 'text-amber-500' :
+                          evt.status === 'cancelled' ? 'text-rose-500' :
+                          evt.status === 'delivered' ? 'text-green-500' :
+                          evt.status === 'in_transit' ? 'text-emerald-500' :
                           'text-zinc-400'
                         }`}>
                           {evt.status}
                         </span>
-                        <span className="text-[10px] text-zinc-550">
+                        <span className="text-[10px] text-zinc-500">
                           {new Date(evt.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       {evt.message && (
                         <p className="text-sm text-zinc-300">{evt.message}</p>
                       )}
-                      <p className="text-[10px] text-zinc-550">
+                      <p className="text-[10px] text-zinc-500">
                         {new Date(evt.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                       </p>
                     </div>

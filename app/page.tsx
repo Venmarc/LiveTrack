@@ -83,33 +83,33 @@ export default async function Home() {
         {/* Core Features Grid */}
         <div className="grid gap-6 md:grid-cols-3 text-left pt-8">
           
-          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-350">
+          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-300">
             <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/10 w-fit mb-4">
               <Package className="h-5 w-5" />
             </div>
             <h3 className="text-lg font-bold text-white font-outfit mb-2">1. Dispatch Shipments</h3>
             <p className="text-sm text-zinc-400 leading-relaxed font-sans">
-              As a **Shipper**, define package weight, carrier drivers, destination waypoints, and dispatch packages up to the demo safety limits.
+              As a <strong className="font-semibold text-blue-400">Shipper</strong>, define package weight, carrier drivers, destination waypoints, and dispatch packages up to the demo safety limits.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-350">
+          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-300">
             <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 w-fit mb-4">
               <Truck className="h-5 w-5" />
             </div>
             <h3 className="text-lg font-bold text-white font-outfit mb-2">2. Stream GPS Telemetry</h3>
             <p className="text-sm text-zinc-400 leading-relaxed font-sans">
-              As a **Driver**, run simulated delivery runs. The engine generates continuous velocity, orientation, and latitude/longitude updates.
+              As a <strong className="font-semibold text-emerald-400">Driver</strong>, run simulated delivery runs. The engine generates continuous velocity, orientation, and latitude/longitude updates.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-350">
+          <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 hover:border-zinc-800/80 transition duration-300">
             <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 w-fit mb-4">
               <Map className="h-5 w-5" />
             </div>
             <h3 className="text-lg font-bold text-white font-outfit mb-2">3. Live Mapping</h3>
             <p className="text-sm text-zinc-400 leading-relaxed font-sans">
-              As a **Recipient**, track vehicle markers moving in real-time across leaflet maps with milestone timeline notifications.
+              As a <strong className="font-semibold text-indigo-400">Recipient</strong>, track vehicle markers moving in real-time across leaflet maps with milestone timeline notifications.
             </p>
           </div>
 

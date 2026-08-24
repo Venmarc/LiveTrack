@@ -7,6 +7,74 @@ import { generateTrackingNumber } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
 import { runShipmentSimulation } from '@/lib/simulation';
 
+export async function adminOverrideStatusAction(
+  shipmentId: string,
+  status: 'picked_up' | 'in_transit' | 'delivered' | 'delayed' | 'cancelled'
+) {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      return { error: 'Not authenticated. Please sign in.' };
+    }
+
+    const role = (user.publicMetadata as Record<string, unknown>)?.role;
+    if (role !== 'admin') {
+      return { error: 'Unauthorized. Only admins can override shipment status.' };
+    }
+
+    const supabase = createSupabaseServiceClient();
+
+    const { data: shipment, error: fetchError } = await supabase
+      .from('shipments')
+      .select('tracking_number')
+      .eq('id', shipmentId)
+      .single();
+
+    if (fetchError || !shipment) {
+      return { error: 'Shipment not found.' };
+    }
+
+    const updatePayload: Record<string, string | null> = {
+      status,
+      updated_at: new Date().toISOString(),
+    };
+    if (status === 'delivered') {
+      updatePayload.actual_delivery = new Date().toISOString();
+    }
+
+    const { error: updateError } = await supabase
+      .from('shipments')
+      .update(updatePayload)
+      .eq('id', shipmentId);
+
+    if (updateError) {
+      return { error: `Failed to update shipment: ${updateError.message}` };
+    }
+
+    const { error: eventError } = await supabase
+      .from('shipment_events')
+      .insert({
+        shipment_id: shipmentId,
+        status,
+        message: `Status overridden by admin (${status.replace('_', ' ')}).`,
+        created_by: user.id,
+      });
+
+    if (eventError) {
+      console.error('Error logging admin override event:', eventError);
+    }
+
+    revalidatePath('/dashboard/admin');
+    revalidatePath('/dashboard/shipper');
+    revalidatePath('/dashboard/driver');
+    revalidatePath(`/tracking/${shipment.tracking_number}`);
+    return { success: true };
+  } catch (error) {
+    console.error('Error in adminOverrideStatusAction:', error);
+    return { error: error instanceof Error ? error.message : 'An unexpected error occurred.' };
+  }
+}
+
 export async function createShipmentAction(input: unknown) {
   try {
     const user = await currentUser();

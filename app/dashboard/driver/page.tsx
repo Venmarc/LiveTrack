@@ -3,7 +3,8 @@ import { currentUser } from '@clerk/nextjs/server';
 import { Truck, Navigation, CheckCircle, Clock } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import DriverDashboardClient from './driver-dashboard-client';
+import DriverDashboardClient, { type ShipmentData } from './driver-dashboard-client';
+import Logo from '@/components/logo';
 
 export default async function DriverDashboard() {
   // Ensure profile is synced in Supabase
@@ -94,9 +95,7 @@ export default async function DriverDashboard() {
       {/* Header */}
       <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
-            🚚 LiveTrack
-          </div>
+          <Logo accent="emerald" />
           <div>
             <h1 className="text-xl font-bold font-outfit text-white leading-none">Courier Driver Portal</h1>
             <p className="text-xs text-zinc-500 mt-1">Route navigation & GPS simulation metrics</p>
@@ -142,10 +141,9 @@ export default async function DriverDashboard() {
         </div>
 
         {/* Interactive Client Component */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <DriverDashboardClient 
-          initialMyShipments={myShipmentList as any} 
-          initialAvailableShipments={availableShipmentList as any} 
+          initialMyShipments={myShipmentList as ShipmentData[]} 
+          initialAvailableShipments={availableShipmentList as ShipmentData[]} 
           maxActiveShipments={maxActiveLimit}
         />
       </main>
