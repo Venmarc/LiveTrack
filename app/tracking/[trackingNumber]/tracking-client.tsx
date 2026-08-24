@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { 
   Package, 
   MapPin, 
@@ -12,10 +14,25 @@ import {
   Clock, 
   AlertTriangle,
   ArrowLeft,
-  Navigation
+  Navigation,
+  Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
+import { supabase } from '@/lib/supabase';
+import type { Database } from '@/lib/database.types';
+
+const LiveMap = dynamic(() => import('@/components/map/live-map'), {
+  ssr: false,
+  loading: () => (
+    <div className="relative h-[320px] rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950/60 flex items-center justify-center">
+      <Loader2 className="h-6 w-6 animate-spin text-zinc-600" />
+    </div>
+  ),
+});
+
+type ShipmentRow = Database['public']['Tables']['shipments']['Row'];
+type ShipmentLocationRow = Database['public']['Tables']['shipment_locations']['Row'];
 
 interface DriverDetails {
   full_name: string | null;
@@ -72,6 +89,71 @@ export default function TrackingClient({
   events,
   latestLocation,
 }: TrackingClientProps) {
+  const [liveShipment, setLiveShipment] = useState(shipment);
+  const [liveEvents, setLiveEvents] = useState(events);
+  const [liveLocation, setLiveLocation] = useState<LocationData | null>(latestLocation);
+
+  const refreshTimeline = useCallback(async (shipmentId: string) => {
+    const { data } = await supabase
+      .from('shipment_events')
+      .select('id, status, message, created_at')
+      .eq('shipment_id', shipmentId)
+      .order('created_at', { ascending: false });
+    if (data) {
+      setLiveEvents(data as TimelineEvent[]);
+    }
+  }, []);
+
+  // Live status updates via Supabase Realtime (cross-tab / cross-role).
+  useEffect(() => {
+    const channel = supabase
+      .channel(`tracking-status-${liveShipment.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'shipments',
+          filter: `id=eq.${liveShipment.id}`,
+        },
+        (payload) => {
+          const row = payload.new as ShipmentRow;
+          setLiveShipment((prev) => ({
+            ...prev,
+            status: row.status as ShipmentData['status'],
+            estimated_delivery: row.estimated_delivery,
+            actual_delivery: row.actual_delivery,
+          }));
+          refreshTimeline(liveShipment.id);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [liveShipment.id, refreshTimeline]);
+
+  const handlePositionChange = useCallback(
+    (position: { lat: number; lng: number }, speedKmh: number, status: string | null) => {
+      setLiveLocation({
+        latitude: position.lat,
+        longitude: position.lng,
+        speed_kmh: speedKmh,
+        timestamp: new Date().toISOString(),
+      });
+      if (status) {
+        setLiveShipment((prev) =>
+          prev.status !== status ? { ...prev, status: status as ShipmentData['status'] } : prev
+        );
+      }
+    },
+    []
+  );
+
+  const mapPosition = liveLocation
+    ? { lat: liveLocation.latitude, lng: liveLocation.longitude }
+    : { lat: liveShipment.origin.lat, lng: liveShipment.origin.lng };
   
   // Helper to format dates
   const formatDate = (dateStr: string | null) => {
@@ -101,7 +183,7 @@ export default function TrackingClient({
     return statusOrder.indexOf(status);
   };
 
-  const currentStepIdx = getStepIndex(shipment.status);
+  const currentStepIdx = getStepIndex(liveShipment.status);
 
   // Helper to render status badges
   const getStatusBadge = (status: string) => {
@@ -157,12 +239,12 @@ export default function TrackingClient({
               <div>
                 <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Tracking Code</span>
                 <div className="mt-0.5">
-                  <CopyableTrackingNumber value={shipment.tracking_number} className="text-xl sm:text-2xl font-bold tracking-wide" />
+                  <CopyableTrackingNumber value={liveShipment.tracking_number} className="text-xl sm:text-2xl font-bold tracking-wide" />
                 </div>
               </div>
               <div className="flex flex-col sm:items-end gap-1.5">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-550 sm:text-right">Current Status</span>
-                {getStatusBadge(shipment.status)}
+                {getStatusBadge(liveShipment.status)}
               </div>
             </div>
 
@@ -230,48 +312,42 @@ export default function TrackingClient({
                 <Calendar className="h-4 w-4 text-zinc-500" />
                 <div>
                   <span className="block text-[10px] text-zinc-550 font-semibold uppercase">Estimated Delivery</span>
-                  <span className="text-white font-medium">{formatDate(shipment.estimated_delivery)}</span>
+                  <span className="text-white font-medium">{formatDate(liveShipment.estimated_delivery)}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-950/40 border border-zinc-900">
                 <CheckCircle2 className="h-4 w-4 text-zinc-500" />
                 <div>
                   <span className="block text-[10px] text-zinc-550 font-semibold uppercase">Actual Delivery</span>
-                  <span className="text-white font-medium">{formatDate(shipment.actual_delivery)}</span>
+                  <span className="text-white font-medium">{formatDate(liveShipment.actual_delivery)}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Card 2: Map Placeholder */}
+          {/* Card 2: Live Map */}
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-4">
             <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
               <div className="flex items-center gap-2">
                 <Navigation className="h-4 w-4 text-emerald-400" />
                 <h3 className="font-bold text-white font-outfit">Live Navigation Map</h3>
               </div>
-              {latestLocation && (
+              {liveLocation && (
                 <div className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-bold animate-pulse">
-                  SPEED: {latestLocation.speed_kmh} KM/H
+                  SPEED: {liveLocation.speed_kmh} KM/H
                 </div>
               )}
             </div>
-            
-            {/* Design elements mimicking active Leaflet layers */}
-            <div className="relative h-[320px] rounded-xl border border-zinc-850 overflow-hidden bg-zinc-950/60 flex flex-col items-center justify-center text-center p-6 space-y-4">
-              
-              {/* Background grid visual decor */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-[size:16px_16px] opacity-60" />
-              
-              <div className="relative z-10 p-4 rounded-full bg-zinc-900/80 border border-zinc-800/60 text-zinc-400 animate-bounce">
-                <Compass className="h-8 w-8 text-blue-500" />
-              </div>
-              <div className="relative z-10 space-y-1.5 max-w-sm">
-                <h4 className="font-bold text-white font-outfit">Real-time Telemetry (Phase 3)</h4>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Interactive Leaflet.js mapping, active simulation interpolation, and driver GPS websocket streams will be activated in the next development phase.
-                </p>
-              </div>
+
+            <div className="relative h-[320px] rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950/60">
+              <LiveMap
+                shipmentId={liveShipment.id}
+                origin={{ lat: liveShipment.origin.lat, lng: liveShipment.origin.lng }}
+                destination={{ lat: liveShipment.destination.lat, lng: liveShipment.destination.lng }}
+                initialPosition={mapPosition}
+                status={liveShipment.status}
+                onPositionChange={handlePositionChange}
+              />
             </div>
           </div>
 
@@ -287,19 +363,19 @@ export default function TrackingClient({
             <div className="space-y-4 text-xs">
               <div className="space-y-1">
                 <span className="text-[10px] text-zinc-550 font-bold uppercase">Ship From</span>
-                <div className="font-medium text-white">{shipment.origin.address}</div>
-                <div className="text-zinc-500">City: {shipment.origin.city || 'N/A'}</div>
+                <div className="font-medium text-white">{liveShipment.origin.address}</div>
+                <div className="text-zinc-500">City: {liveShipment.origin.city || 'N/A'}</div>
               </div>
               
               <div className="h-px bg-zinc-900" />
               
               <div className="space-y-1">
                 <span className="text-[10px] text-zinc-550 font-bold uppercase">Ship To</span>
-                <div className="font-medium text-white">{shipment.destination.address}</div>
-                <div className="text-zinc-500">City: {shipment.destination.city || 'N/A'}</div>
+                <div className="font-medium text-white">{liveShipment.destination.address}</div>
+                <div className="text-zinc-500">City: {liveShipment.destination.city || 'N/A'}</div>
               </div>
 
-              {shipment.driver && (
+              {liveShipment.driver && (
                 <>
                   <div className="h-px bg-zinc-900" />
                   <div className="space-y-2">
@@ -308,7 +384,7 @@ export default function TrackingClient({
                       <div className="p-1.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-800">
                         <User className="h-4 w-4" />
                       </div>
-                      <span className="font-semibold text-zinc-200">{shipment.driver.full_name || 'System Courier'}</span>
+                      <span className="font-semibold text-zinc-200">{liveShipment.driver.full_name || 'System Courier'}</span>
                     </div>
                   </div>
                 </>
@@ -320,11 +396,11 @@ export default function TrackingClient({
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-4 flex-1">
             <h3 className="font-bold text-white font-outfit border-b border-zinc-900 pb-3">Status Timeline</h3>
             
-            {events.length === 0 ? (
+            {liveEvents.length === 0 ? (
               <div className="text-center py-6 text-xs text-zinc-550">No events logged yet.</div>
             ) : (
               <div className="relative pl-4 border-l border-zinc-800 space-y-6">
-                {events.map((event, idx) => {
+                {liveEvents.map((event, idx) => {
                   const isLatest = idx === 0;
                   return (
                     <div key={event.id} className="relative text-xs">

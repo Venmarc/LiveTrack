@@ -1,26 +1,80 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #09090b;
+  --foreground: #f4f4f5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* LiveTrack map marker */
+.livetrack-marker-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.livetrack-marker {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.livetrack-marker::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.35);
+  animation: livetrack-pulse 2s ease-out infinite;
+}
+
+.livetrack-marker svg {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.9));
+}
+
+@keyframes livetrack-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.livetrack-endpoint {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: 3px solid #09090b;
+}
+
+.livetrack-endpoint--origin {
+  background: #10b981;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.5);
+}
+
+.livetrack-endpoint--destination {
+  background: #6366f1;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.5);
 }
