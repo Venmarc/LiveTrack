@@ -5,6 +5,7 @@ import { Package, PlusCircle, TrendingUp, AlertTriangle, ArrowRight, User } from
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { SeedButton } from '@/components/seed-button';
+import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 
 export default async function ShipperDashboard() {
   // Ensure profile is synced in Supabase
@@ -187,8 +188,8 @@ export default async function ShipperDashboard() {
                       key={shipment.id} 
                       className="text-sm text-zinc-300 hover:bg-zinc-900/20 transition-colors duration-150"
                     >
-                      <td className="px-6 py-4 font-mono font-bold text-white">
-                        {shipment.tracking_number}
+                      <td className="px-6 py-4">
+                        <CopyableTrackingNumber value={shipment.tracking_number} />
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium text-white">{shipment.recipient_name}</div>

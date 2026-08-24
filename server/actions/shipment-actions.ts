@@ -5,6 +5,7 @@ import { createSupabaseServiceClient } from '@/lib/supabase-server';
 import { createShipmentInputSchema } from '@/lib/schemas';
 import { generateTrackingNumber } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
+import { runShipmentSimulation } from '@/lib/simulation';
 
 export async function createShipmentAction(input: unknown) {
   try {
@@ -283,6 +284,13 @@ export async function updateShipmentStatusAction(
     }
 
     console.log(`✅ Shipment ${shipment.tracking_number} status updated to ${status} by driver ${user.id}`);
+
+    // If shipment is transitioning to in_transit, fire-and-forget background simulation
+    if (status === 'in_transit') {
+      runShipmentSimulation(shipmentId).catch((err) => {
+        console.error(`[Simulation] Error in background simulation loop:`, err);
+      });
+    }
 
     revalidatePath('/dashboard/driver');
     revalidatePath('/dashboard/shipper');

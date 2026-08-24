@@ -1,4 +1,4 @@
-# PHASES.md - LiveTrack Development Phases
+# LiveTrack Development Phases
 
 This file contains detailed deliverables, success criteria, and quality gates for each phase. PROJECT.md remains the single source of truth.
 

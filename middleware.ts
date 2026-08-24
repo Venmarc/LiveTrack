@@ -1,5 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Define Custom JWT Claims type safety
 declare global {
@@ -7,6 +11,7 @@ declare global {
     metadata?: {
       role?: 'shipper' | 'driver' | 'recipient' | 'admin';
     };
+    role?: 'shipper' | 'driver' | 'recipient' | 'admin';
   }
 }
 
@@ -22,7 +27,32 @@ export default clerkMiddleware(async (auth, req) => {
       return (await auth()).redirectToSignIn();
     }
 
-    const role = sessionClaims?.metadata?.role;
+    // 1. Try to read the role from the session claims first (fastest)
+    // Check both standard location (sessionClaims?.metadata?.role) and root fallback (sessionClaims?.role)
+    let role = sessionClaims?.metadata?.role || sessionClaims?.role;
+
+    // 2. If it's missing from session claims, query the profiles table in Supabase directly
+    if (!role && supabaseUrl && supabaseServiceKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        });
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', userId)
+          .single();
+
+        if (!error && data?.role) {
+          role = data.role as 'shipper' | 'driver' | 'recipient' | 'admin';
+        }
+      } catch (err) {
+        console.error('Middleware database role fetch error:', err);
+      }
+    }
 
     // If user is authenticated but has no role, force them to onboard
     if (!role && !isOnboardRoute(req)) {

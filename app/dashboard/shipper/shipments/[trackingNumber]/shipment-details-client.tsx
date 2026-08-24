@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -127,7 +128,10 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
               <h1 className="text-xl font-bold font-outfit text-white leading-none">Shipment Status</h1>
               {getStatusBadge(shipment.status)}
             </div>
-            <p className="text-xs text-zinc-500 mt-1.5">Tracking Number: {shipment.tracking_number}</p>
+            <div className="text-xs text-zinc-500 mt-1.5 flex items-center gap-1.5">
+              <span>Tracking Number:</span>
+              <CopyableTrackingNumber value={shipment.tracking_number} />
+            </div>
           </div>
         </div>
       </header>

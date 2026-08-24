@@ -4,6 +4,7 @@ import { Package, Calendar, Bell, ArrowRight, User } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { TrackingSearch } from '@/components/tracking-search';
+import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 
 export default async function RecipientDashboard() {
   // Ensure profile is synced in Supabase
@@ -193,8 +194,8 @@ export default async function RecipientDashboard() {
                       key={shipment.id} 
                       className="text-sm text-zinc-300 hover:bg-zinc-900/20 transition-colors duration-150"
                     >
-                      <td className="px-6 py-4 font-mono font-bold text-white">
-                        {shipment.tracking_number}
+                      <td className="px-6 py-4">
+                        <CopyableTrackingNumber value={shipment.tracking_number} />
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-zinc-300">

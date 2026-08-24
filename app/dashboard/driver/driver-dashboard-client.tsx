@@ -18,6 +18,7 @@ import {
 import { claimShipmentAction, updateShipmentStatusAction } from '@/server/actions/shipment-actions';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 
 interface ProfileDetails {
   full_name: string | null;
@@ -191,8 +192,8 @@ export default function DriverDashboardClient({
                       <div className="flex items-start justify-between">
                         <div>
                           <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Tracking Code</span>
-                          <div className="text-base font-mono font-bold text-white flex items-center gap-2">
-                            {shipment.tracking_number}
+                          <div className="text-base flex items-center gap-2 mt-0.5">
+                            <CopyableTrackingNumber value={shipment.tracking_number} />
                           </div>
                         </div>
                         {getStatusBadge(shipment.status)}
@@ -354,8 +355,8 @@ export default function DriverDashboardClient({
                           key={shipment.id} 
                           className="text-sm text-zinc-300 hover:bg-zinc-900/20 transition-colors duration-150"
                         >
-                          <td className="px-6 py-4 font-mono font-bold text-white">
-                            {shipment.tracking_number}
+                          <td className="px-6 py-4">
+                            <CopyableTrackingNumber value={shipment.tracking_number} />
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
@@ -440,8 +441,8 @@ export default function DriverDashboardClient({
                         key={shipment.id} 
                         className="text-sm text-zinc-300 hover:bg-zinc-900/20 transition-colors duration-150"
                       >
-                        <td className="px-6 py-4 font-mono font-bold text-white">
-                          {shipment.tracking_number}
+                        <td className="px-6 py-4">
+                          <CopyableTrackingNumber value={shipment.tracking_number} />
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-zinc-300">

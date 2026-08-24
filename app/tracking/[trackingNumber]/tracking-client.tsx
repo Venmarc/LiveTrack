@@ -15,6 +15,7 @@ import {
   Navigation
 } from 'lucide-react';
 import Link from 'next/link';
+import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 
 interface DriverDetails {
   full_name: string | null;
@@ -155,7 +156,9 @@ export default function TrackingClient({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">Tracking Code</span>
-                <h2 className="text-2xl font-mono font-bold text-white tracking-wide">{shipment.tracking_number}</h2>
+                <div className="mt-0.5">
+                  <CopyableTrackingNumber value={shipment.tracking_number} className="text-xl sm:text-2xl font-bold tracking-wide" />
+                </div>
               </div>
               <div className="flex flex-col sm:items-end gap-1.5">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-550 sm:text-right">Current Status</span>
