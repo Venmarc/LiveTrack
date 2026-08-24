@@ -27,20 +27,23 @@ export default async function PublicTrackingPage({ params }: RouteParams) {
     notFound();
   }
 
-  // 2. Fetch tracking events
-  const { data: events } = await supabase
-    .from('shipment_events')
-    .select('*')
-    .eq('shipment_id', shipment.id)
-    .order('created_at', { ascending: false });
+  // 2. Fetch tracking events and latest location in parallel
+  const [eventsResult, locationsResult] = await Promise.all([
+    supabase
+      .from('shipment_events')
+      .select('*')
+      .eq('shipment_id', shipment.id)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('shipment_locations')
+      .select('*')
+      .eq('shipment_id', shipment.id)
+      .order('timestamp', { ascending: false })
+      .limit(1),
+  ]);
 
-  // 3. Fetch latest locations (for live tracking indicators)
-  const { data: locations } = await supabase
-    .from('shipment_locations')
-    .select('*')
-    .eq('shipment_id', shipment.id)
-    .order('timestamp', { ascending: false })
-    .limit(1);
+  const events = eventsResult.data;
+  const locations = locationsResult.data;
 
   const latestLocation = locations && locations.length > 0 ? locations[0] : null;
 

@@ -33,7 +33,7 @@ export function CopyableTrackingNumber({ value, className = '' }: CopyableTracki
       title="Click to copy tracking number"
     >
       <span>{value}</span>
-      <span className="relative flex items-center justify-center w-3.5 h-3.5 text-zinc-500 group-hover:text-blue-400 transition-colors">
+      <span className="relative flex items-center justify-center w-3.5 h-3.5 text-zinc-400 group-hover:text-blue-400 transition-colors">
         {copied ? (
           <Check className="h-3 w-3 text-emerald-400 scale-100 transition-transform duration-200" />
         ) : (
@@ -41,7 +41,7 @@ export function CopyableTrackingNumber({ value, className = '' }: CopyableTracki
         )}
       </span>
       {copied && (
-        <span className="text-[10px] text-emerald-400 font-sans font-medium animate-in fade-in slide-in-from-left-1 duration-200 shrink-0">
+        <span className="text-xs text-emerald-400 font-sans font-medium animate-in fade-in slide-in-from-left-1 duration-200 shrink-0">
           Copied!
         </span>
       )}

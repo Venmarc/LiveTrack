@@ -78,9 +78,10 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Protect dashboard and onboard routes, skip Next.js internals
-    '/((?!_next|[^?]*\\.(?:html|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
+    // Only run auth on protected routes and APIs so public pages skip the
+    // Clerk handshake redirect and stay fast.
+    '/dashboard/:path*',
+    '/onboard/:path*',
     '/(api|trpc)(.*)',
   ],
 };

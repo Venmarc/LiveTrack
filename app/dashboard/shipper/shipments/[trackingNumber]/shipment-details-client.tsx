@@ -128,7 +128,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
               <h1 className="text-xl font-bold font-outfit text-white leading-none">Shipment Status</h1>
               {getStatusBadge(shipment.status)}
             </div>
-            <div className="text-xs text-zinc-500 mt-1.5 flex items-center gap-1.5">
+            <div className="text-xs text-zinc-400 mt-1.5 flex items-center gap-1.5">
               <span>Tracking Number:</span>
               <CopyableTrackingNumber value={shipment.tracking_number} />
             </div>
@@ -155,7 +155,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <User className="h-4 w-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Recipient Name</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Recipient Name</p>
                   <p className="text-sm font-semibold text-zinc-200">{shipment.recipient_name}</p>
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <Mail className="h-4 w-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Recipient Email</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Recipient Email</p>
                   <p className="text-sm font-semibold text-zinc-200">{shipment.recipient_email}</p>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <Phone className="h-4 w-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Recipient Phone</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Recipient Phone</p>
                   <p className="text-sm font-semibold text-zinc-200">{shipment.recipient_phone || 'Not provided'}</p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Estimated Delivery</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Estimated Delivery</p>
                   <p className="text-sm font-semibold text-zinc-200">
                     {shipment.estimated_delivery 
                       ? new Date(shipment.estimated_delivery).toLocaleDateString(undefined, { dateStyle: 'long' }) 
@@ -214,13 +214,13 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Origin</span>
                     {shipment.origin.city && (
-                      <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-zinc-800 text-zinc-300">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-md bg-zinc-800 text-zinc-300">
                         {shipment.origin.city}
                       </span>
                     )}
                   </div>
                   <p className="text-sm font-bold text-white">{shipment.origin.address}</p>
-                  <p className="text-xs text-zinc-500 font-mono">Coordinates: [{shipment.origin.lat.toFixed(4)}, {shipment.origin.lng.toFixed(4)}]</p>
+                  <p className="text-xs text-zinc-400 font-mono">Coordinates: [{shipment.origin.lat.toFixed(4)}, {shipment.origin.lng.toFixed(4)}]</p>
                 </div>
               </div>
 
@@ -233,13 +233,13 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-indigo-500">Destination</span>
                     {shipment.destination.city && (
-                      <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-zinc-800 text-zinc-300">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-md bg-zinc-800 text-zinc-300">
                         {shipment.destination.city}
                       </span>
                     )}
                   </div>
                   <p className="text-sm font-bold text-white">{shipment.destination.address}</p>
-                  <p className="text-xs text-zinc-500 font-mono">Coordinates: [{shipment.destination.lat.toFixed(4)}, {shipment.destination.lng.toFixed(4)}]</p>
+                  <p className="text-xs text-zinc-400 font-mono">Coordinates: [{shipment.destination.lat.toFixed(4)}, {shipment.destination.lng.toFixed(4)}]</p>
                 </div>
               </div>
 
@@ -267,7 +267,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                     className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 p-1"
                   />
                 ) : (
-                  <div className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-500">
+                  <div className="h-14 w-14 rounded-2xl bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-400">
                     <User className="h-6 w-6" />
                   </div>
                 )}
@@ -275,14 +275,14 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                   <h3 className="font-bold text-white">{shipment.driver.full_name}</h3>
                   <p className="text-xs text-zinc-400 mt-0.5">Status: Active</p>
                   {shipment.driver.base_location && (
-                    <p className="text-[10px] text-zinc-500 mt-1">Base: {shipment.driver.base_location.city || shipment.driver.base_location.address}</p>
+                    <p className="text-xs text-zinc-400 mt-1">Base: {shipment.driver.base_location.city || shipment.driver.base_location.address}</p>
                   )}
                 </div>
               </div>
             ) : (
               <div className="rounded-xl border border-dashed border-zinc-800 p-4 text-center">
-                <p className="text-sm text-zinc-500 italic">No courier assigned yet.</p>
-                <p className="text-xs text-zinc-500 mt-1">Drivers can claim this job from their portal.</p>
+                <p className="text-sm text-zinc-400 italic">No courier assigned yet.</p>
+                <p className="text-xs text-zinc-400 mt-1">Drivers can claim this job from their portal.</p>
               </div>
             )}
           </div>
@@ -298,7 +298,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
 
             {/* Filter Buttons Section */}
             <div className="space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Filter History</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Filter History</span>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setFilter('all')}
@@ -365,7 +365,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
 
                     <div className="space-y-1">
                       <div className="flex items-center justify-between gap-4">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                        <span className={`text-xs font-bold uppercase tracking-wider ${
                           evt.status === 'delayed' ? 'text-amber-500' :
                           evt.status === 'cancelled' ? 'text-rose-500' :
                           evt.status === 'delivered' ? 'text-green-500' :
@@ -374,14 +374,14 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
                         }`}>
                           {evt.status}
                         </span>
-                        <span className="text-[10px] text-zinc-500">
+                        <span className="text-xs text-zinc-400">
                           {new Date(evt.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       {evt.message && (
                         <p className="text-sm text-zinc-300">{evt.message}</p>
                       )}
-                      <p className="text-[10px] text-zinc-500">
+                      <p className="text-xs text-zinc-400">
                         {new Date(evt.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                       </p>
                     </div>
@@ -390,7 +390,7 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
               </div>
             ) : (
               <div className="text-center py-4 border border-dashed border-zinc-800 rounded-xl">
-                <p className="text-xs text-zinc-500 italic">No events found matching this filter.</p>
+                <p className="text-xs text-zinc-400 italic">No events found matching this filter.</p>
               </div>
             )}
 

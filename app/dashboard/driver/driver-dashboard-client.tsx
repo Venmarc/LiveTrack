@@ -130,7 +130,7 @@ export default function DriverDashboardClient({
       case 'delivered':
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-teal-500/10 text-teal-400 border border-teal-500/20">Delivered</span>;
       case 'cancelled':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-zinc-800 text-zinc-500 border border-zinc-800">Cancelled</span>;
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-zinc-800 text-zinc-400 border border-zinc-800">Cancelled</span>;
       default:
         return <span className="px-2.5 py-1 text-xs font-semibold rounded-md bg-zinc-800 text-zinc-400">{status}</span>;
     }
@@ -143,7 +143,7 @@ export default function DriverDashboardClient({
         <button
           onClick={() => setActiveTab('active')}
           className={`pb-3 text-sm font-semibold transition relative cursor-pointer ${
-            activeTab === 'active' ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'
+            activeTab === 'active' ? 'text-emerald-400' : 'text-zinc-400 hover:text-zinc-300'
           }`}
         >
           My Active Deliveries ({activeMyShipments.length})
@@ -154,7 +154,7 @@ export default function DriverDashboardClient({
         <button
           onClick={() => setActiveTab('available')}
           className={`pb-3 text-sm font-semibold transition relative cursor-pointer ${
-            activeTab === 'available' ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'
+            activeTab === 'available' ? 'text-emerald-400' : 'text-zinc-400 hover:text-zinc-300'
           }`}
         >
           Available Jobs ({initialAvailableShipments.length})
@@ -165,7 +165,7 @@ export default function DriverDashboardClient({
         <button
           onClick={() => setActiveTab('history')}
           className={`pb-3 text-sm font-semibold transition relative cursor-pointer ${
-            activeTab === 'history' ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'
+            activeTab === 'history' ? 'text-emerald-400' : 'text-zinc-400 hover:text-zinc-300'
           }`}
         >
           History ({deliveredMyShipments.length})
@@ -185,7 +185,7 @@ export default function DriverDashboardClient({
               </div>
               <div className="space-y-1">
                 <h4 className="font-bold text-white font-outfit text-base">No active shipments</h4>
-                <p className="text-sm text-zinc-500 max-w-sm">
+                <p className="text-sm text-zinc-400 max-w-sm">
                   You are not transporting any active shipments right now. Go to the <span className="font-semibold text-emerald-400 hover:underline cursor-pointer" onClick={() => setActiveTab('available')}>Available Jobs</span> tab to claim one!
                 </p>
               </div>
@@ -203,7 +203,7 @@ export default function DriverDashboardClient({
                       {/* Header row */}
                       <div className="flex items-start justify-between">
                         <div>
-                          <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Tracking Code</span>
+                          <span className="text-xs uppercase tracking-wider font-bold text-zinc-400">Tracking Code</span>
                           <div className="text-base flex items-center gap-2 mt-0.5">
                             <CopyableTrackingNumber value={shipment.tracking_number} />
                           </div>
@@ -217,7 +217,7 @@ export default function DriverDashboardClient({
                           <MapPin className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
                           <div className="space-y-0.5">
                             <span className="font-semibold text-white">Origin ({shipment.origin.city || 'Hub'})</span>
-                            <p className="text-zinc-500 line-clamp-1">{shipment.origin.address}</p>
+                            <p className="text-zinc-400 line-clamp-1">{shipment.origin.address}</p>
                           </div>
                         </div>
                         <div className="h-4 border-l border-zinc-800 ml-2" />
@@ -225,7 +225,7 @@ export default function DriverDashboardClient({
                           <MapPin className="h-4 w-4 text-indigo-400 mt-0.5 shrink-0" />
                           <div className="space-y-0.5">
                             <span className="font-semibold text-white">Destination ({shipment.destination.city || 'Hub'})</span>
-                            <p className="text-zinc-500 line-clamp-1">{shipment.destination.address}</p>
+                            <p className="text-zinc-400 line-clamp-1">{shipment.destination.address}</p>
                           </div>
                         </div>
                       </div>
@@ -253,12 +253,12 @@ export default function DriverDashboardClient({
                       {/* Recipient info */}
                       <div className="flex items-center justify-between text-xs pt-2 border-t border-zinc-900 text-zinc-400">
                         <div>
-                          <span className="block text-[10px] text-zinc-500 font-semibold uppercase">Recipient</span>
+                          <span className="block text-xs text-zinc-400 font-semibold uppercase">Recipient</span>
                           <span className="text-white font-medium">{shipment.recipient_name}</span>
                         </div>
                         {shipment.shipper && (
                           <div className="text-right">
-                            <span className="block text-[10px] text-zinc-500 font-semibold uppercase">Shipper</span>
+                            <span className="block text-xs text-zinc-400 font-semibold uppercase">Shipper</span>
                             <span className="text-zinc-300 font-medium">{shipment.shipper.full_name || 'System Shipper'}</span>
                           </div>
                         )}
@@ -267,7 +267,7 @@ export default function DriverDashboardClient({
 
                     {/* Step-by-Step Status Controls */}
                     <div className="pt-4 border-t border-zinc-900 flex flex-wrap items-center justify-between gap-3">
-                      <div className="text-xs text-zinc-500">
+                      <div className="text-xs text-zinc-400">
                         {shipment.status === 'assigned' && 'Next: Confirm package pickup'}
                         {shipment.status === 'picked_up' && 'Next: Start the transit run'}
                         {shipment.status === 'in_transit' && 'Next: Confirm safe delivery'}
@@ -361,7 +361,7 @@ export default function DriverDashboardClient({
               </div>
               <div className="space-y-1">
                 <h4 className="font-bold text-white font-outfit text-base">No available delivery jobs</h4>
-                <p className="text-sm text-zinc-500 max-w-sm">
+                <p className="text-sm text-zinc-400 max-w-sm">
                   There are no pending, unclaimed shipments in the system right now. Shippers can book new shipments to generate jobs here.
                 </p>
               </div>
@@ -392,7 +392,7 @@ export default function DriverDashboardClient({
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <div className="p-1 rounded-full bg-zinc-800 text-zinc-500">
+                              <div className="p-1 rounded-full bg-zinc-800 text-zinc-400">
                                 <User className="h-3 w-3" />
                               </div>
                               <span className="font-medium">{shipment.shipper?.full_name || 'System Shipper'}</span>
@@ -404,7 +404,7 @@ export default function DriverDashboardClient({
                               <ArrowRight className="h-3 w-3 text-zinc-600" />
                               <span>{shipment.destination.city || 'Destination'}</span>
                             </div>
-                            <div className="text-xs text-zinc-500 mt-0.5 truncate max-w-[200px]">
+                            <div className="text-xs text-zinc-400 mt-0.5 truncate max-w-[200px]">
                               {shipment.origin.address}
                             </div>
                           </td>
@@ -417,7 +417,7 @@ export default function DriverDashboardClient({
                               onClick={() => handleClaim(shipment.id)}
                               className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-xs transition ${
                                 isLimitReached
-                                  ? 'bg-zinc-900 border border-zinc-800 text-zinc-500 cursor-not-allowed'
+                                  ? 'bg-zinc-900 border border-zinc-800 text-zinc-400 cursor-not-allowed'
                                   : 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
                               }`}
                             >
@@ -449,7 +449,7 @@ export default function DriverDashboardClient({
               </div>
               <div className="space-y-1">
                 <h4 className="font-bold text-white font-outfit text-base">No delivery history</h4>
-                <p className="text-sm text-zinc-500 max-w-sm">
+                <p className="text-sm text-zinc-400 max-w-sm">
                   You have not successfully completed any deliveries yet. Progress your active deliveries to completion to view them here.
                 </p>
               </div>
@@ -482,7 +482,7 @@ export default function DriverDashboardClient({
                             <ArrowRight className="h-3 w-3 text-zinc-600" />
                             <span>{shipment.destination.city || 'Destination'}</span>
                           </div>
-                          <div className="text-xs text-zinc-500 mt-0.5 truncate max-w-[200px]">
+                          <div className="text-xs text-zinc-400 mt-0.5 truncate max-w-[200px]">
                             {shipment.origin.address}
                           </div>
                         </td>

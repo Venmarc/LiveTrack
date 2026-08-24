@@ -92,6 +92,32 @@ export default function LiveMap({
     statusRef.current = status;
   });
 
+  // Give the Leaflet divIcon markers accessible names. Leaflet auto-turns
+  // markers into unnamed buttons; the endpoints are decorative images and the
+  // truck is an informational element, not a control.
+  useEffect(() => {
+    const labelMarkers = () => {
+      document.querySelectorAll('.livetrack-marker-wrapper').forEach((el) => {
+        if (el.hasAttribute('aria-label')) return;
+        const html = (el as HTMLElement).innerHTML;
+        if (html.includes('livetrack-endpoint--origin')) {
+          el.setAttribute('role', 'img');
+          el.setAttribute('aria-label', 'Ship from origin');
+          el.removeAttribute('tabindex');
+        } else if (html.includes('livetrack-endpoint--destination')) {
+          el.setAttribute('role', 'img');
+          el.setAttribute('aria-label', 'Ship to destination');
+          el.removeAttribute('tabindex');
+        } else {
+          el.setAttribute('aria-label', 'Current vehicle position');
+        }
+      });
+    };
+    labelMarkers();
+    const id = window.setTimeout(labelMarkers, 300);
+    return () => window.clearTimeout(id);
+  }, []);
+
   // Continuous animation loop. It runs for the whole mount and only moves the
   // marker when a broadcast target is present, so it is cheap when idle.
   useEffect(() => {
