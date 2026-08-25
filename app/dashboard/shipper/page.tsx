@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { SeedButton } from '@/components/seed-button';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 import Logo from '@/components/logo';
+import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function ShipperDashboard() {
   // Ensure profile is synced in Supabase
@@ -41,6 +42,8 @@ export default async function ShipperDashboard() {
   ).length;
   const inTransitCount = shipmentList.filter(s => s.status === 'in_transit').length;
   const delayedCount = shipmentList.filter(s => s.status === 'delayed').length;
+  const hasAssignedShipment = shipmentList.some(s => s.driver_id !== null);
+  const hasLiveShipment = shipmentList.some(s => s.status === 'in_transit' || s.status === 'delivered');
 
   const stats = [
     { 
@@ -128,6 +131,17 @@ export default async function ShipperDashboard() {
             </Link>
           </div>
         </div>
+
+        <RoleOnboarding
+          role="shipper"
+          context={{
+            shipmentCount: shipmentList.length,
+            hasShipment: hasAssignedShipment,
+            hasActiveShipment: hasLiveShipment,
+          }}
+          primaryHref="/dashboard/shipper/new"
+          primaryLabel="Book a shipment"
+        />
 
         {/* Stats Grid */}
         <div className="grid gap-6 sm:grid-cols-3">

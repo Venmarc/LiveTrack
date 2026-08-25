@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { TrackingSearch } from '@/components/tracking-search';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 import Logo from '@/components/logo';
+import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function RecipientDashboard() {
   // Ensure profile is synced in Supabase
@@ -42,6 +43,8 @@ export default async function RecipientDashboard() {
     s => s.status !== 'delivered' && s.status !== 'cancelled'
   ).length;
   const delayedCount = shipmentList.filter(s => s.status === 'delayed').length;
+  const hasAssignedShipment = shipmentList.some(s => s.driver_id !== null);
+  const hasLiveShipment = shipmentList.some(s => s.status === 'in_transit' || s.status === 'delivered');
 
   // Count shipments arriving today (simplified: check if estimated_delivery is today)
   const isToday = (dateStr: string | null) => {
@@ -136,6 +139,17 @@ export default async function RecipientDashboard() {
           </div>
           <TrackingSearch />
         </div>
+
+        <RoleOnboarding
+          role="recipient"
+          context={{
+            shipmentCount: shipmentList.length,
+            hasShipment: hasAssignedShipment,
+            hasActiveShipment: hasLiveShipment,
+          }}
+          primaryHref={shipmentList[0] ? `/tracking/${shipmentList[0].tracking_number}` : '/'}
+          primaryLabel={shipmentList[0] ? 'Track latest package' : 'Find a package'}
+        />
 
         {/* Stats Grid */}
         <div className="grid gap-6 sm:grid-cols-3">

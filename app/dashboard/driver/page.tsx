@@ -1,10 +1,11 @@
 import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
-import { Truck, Navigation, CheckCircle, Clock } from 'lucide-react';
+import { Truck, CheckCircle, Clock } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import DriverDashboardClient, { type ShipmentData } from './driver-dashboard-client';
 import Logo from '@/components/logo';
+import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function DriverDashboard() {
   // Ensure profile is synced in Supabase
@@ -62,6 +63,9 @@ export default async function DriverDashboard() {
   ).length;
   const deliveredCount = myShipmentList.filter(s => s.status === 'delivered').length;
   const availableCount = availableShipmentList.length;
+  const hasTransitShipment = myShipmentList.some(
+    s => s.status === 'in_transit' || s.status === 'delivered'
+  );
 
   const stats = [
     { 
@@ -101,6 +105,7 @@ export default async function DriverDashboard() {
             <p className="text-xs text-zinc-500 mt-1">Route navigation & GPS simulation metrics</p>
           </div>
         </div>
+
         <div className="flex items-center gap-4">
           <span className="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             DRIVER PORTAL
@@ -120,6 +125,19 @@ export default async function DriverDashboard() {
             </p>
           </div>
         </div>
+
+        <RoleOnboarding
+          role="driver"
+          context={{
+            shipmentCount: myShipmentList.length,
+            availableCount,
+            hasShipment: myShipmentList.length > 0,
+            hasActiveShipment: activeCount > 0,
+            hasTransitShipment,
+          }}
+          primaryHref="#delivery-workspace"
+          primaryLabel="Continue to deliveries"
+        />
 
         {/* Stats Grid */}
         <div className="grid gap-6 sm:grid-cols-3">
@@ -141,11 +159,13 @@ export default async function DriverDashboard() {
         </div>
 
         {/* Interactive Client Component */}
-        <DriverDashboardClient 
-          initialMyShipments={myShipmentList as ShipmentData[]} 
-          initialAvailableShipments={availableShipmentList as ShipmentData[]} 
-          maxActiveShipments={maxActiveLimit}
-        />
+        <div id="delivery-workspace" className="scroll-mt-24">
+          <DriverDashboardClient
+            initialMyShipments={myShipmentList as ShipmentData[]}
+            initialAvailableShipments={availableShipmentList as ShipmentData[]}
+            maxActiveShipments={maxActiveLimit}
+          />
+        </div>
       </main>
     </div>
   );

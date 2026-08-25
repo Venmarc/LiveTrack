@@ -7,6 +7,7 @@ import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 import AdminActions from './admin-actions';
 import Logo from '@/components/logo';
 import Link from 'next/link';
+import { RoleOnboarding } from '@/components/role-onboarding';
 
 const statusBadge: Record<string, string> = {
   pending: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
@@ -42,6 +43,8 @@ export default async function AdminDashboard() {
   }
 
   const shipmentList = shipments || [];
+  const hasActiveShipment = shipmentList.some((s) => s.status === 'in_transit');
+  const hasDeliveredShipment = shipmentList.some((s) => s.status === 'delivered');
 
   const stats = [
     { title: 'Total Shipments', value: shipmentList.length, icon: Package, color: 'text-blue-400', bg: 'bg-blue-500/10' },
@@ -69,6 +72,18 @@ export default async function AdminDashboard() {
       </header>
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+        <RoleOnboarding
+          role="admin"
+          context={{
+            shipmentCount: shipmentList.length,
+            hasShipment: shipmentList.length > 0,
+            hasActiveShipment,
+            hasDeliveredShipment,
+          }}
+          primaryHref="#network-shipments"
+          primaryLabel="Review shipments"
+        />
+
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => {
             const Icon = stat.icon;
@@ -86,7 +101,7 @@ export default async function AdminDashboard() {
           })}
         </div>
 
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
+        <div id="network-shipments" className="scroll-mt-24 rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
           <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between">
             <h3 className="font-bold text-white font-outfit">All Shipments</h3>
             <span className="text-xs text-zinc-500">{shipmentList.length} total</span>
