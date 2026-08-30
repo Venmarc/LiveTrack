@@ -1,13 +1,13 @@
 import { Package, Truck, Map, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { TrackingSearch } from '@/components/tracking-search';
-import LandingHeader from '@/components/landing-header';
+import PublicHeader from '@/components/public-header';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       
       {/* Navigation Header */}
-      <LandingHeader />
+      <PublicHeader />
 
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 md:py-24 text-center max-w-5xl mx-auto space-y-12">
@@ -29,7 +29,7 @@ export default function Home() {
         </div>
 
         {/* Public Tracker Input */}
-        <div className="w-full max-w-lg p-6 rounded-2xl bg-zinc-900/40 border border-zinc-900 backdrop-blur-md space-y-4 text-left shadow-2xl shadow-black/50">
+        <div id="track-shipment" className="w-full max-w-lg scroll-mt-24 p-6 rounded-2xl bg-zinc-900/40 border border-zinc-900 backdrop-blur-md space-y-4 text-left shadow-2xl shadow-black/50">
           <label className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
             Track a Shipment
           </label>

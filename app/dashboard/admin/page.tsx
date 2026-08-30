@@ -1,23 +1,13 @@
-import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
+import Link from 'next/link';
 import { Package, Truck, CheckCircle, AlertTriangle, ArrowRight } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
 import AdminActions from './admin-actions';
-import Logo from '@/components/logo';
-import Link from 'next/link';
+import AppHeader from '@/components/app-header';
 import { RoleOnboarding } from '@/components/role-onboarding';
-
-const statusBadge: Record<string, string> = {
-  pending: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
-  assigned: 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
-  picked_up: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-  in_transit: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-  delayed: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
-  delivered: 'bg-teal-500/10 text-teal-400 border border-teal-500/20',
-  cancelled: 'bg-zinc-800 text-zinc-500 border border-zinc-800',
-};
+import { getShipmentStatusPresentation } from '@/lib/shipment-status.mjs';
 
 export default async function AdminDashboard() {
   await ensureProfile();
@@ -55,21 +45,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo accent="zinc" />
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Admin Portal</h1>
-            <p className="text-xs text-zinc-500 mt-1">System overview & manual overrides</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-zinc-500/10 text-zinc-300 border border-zinc-500/20">
-            ADMIN
-          </span>
-          <UserButton />
-        </div>
-      </header>
+      <AppHeader role="admin" />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
         <RoleOnboarding
@@ -103,7 +79,7 @@ export default async function AdminDashboard() {
 
         <div id="network-shipments" className="scroll-mt-24 rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
           <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between">
-            <h3 className="font-bold text-white font-outfit">All Shipments</h3>
+            <h1 className="font-bold text-white font-outfit">All Shipments</h1>
             <span className="text-xs text-zinc-500">{shipmentList.length} total</span>
           </div>
 
@@ -144,8 +120,8 @@ export default async function AdminDashboard() {
                         {shipment.driver?.full_name || <span className="text-zinc-500 text-xs italic">Unassigned</span>}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 text-xs font-semibold rounded-md ${statusBadge[shipment.status] || 'bg-zinc-800 text-zinc-400'}`}>
-                          {shipment.status.replace('_', ' ')}
+                        <span className={`inline-flex rounded-[var(--radius-pill)] border px-2.5 py-1 text-xs font-semibold ${getShipmentStatusPresentation(shipment.status).className}`}>
+                          {getShipmentStatusPresentation(shipment.status).label}
                         </span>
                       </td>
                       <td className="px-6 py-4">

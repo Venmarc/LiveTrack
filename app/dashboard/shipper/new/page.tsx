@@ -2,10 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { toast } from 'sonner';
-import { ArrowLeft, PlusCircle, Loader2, MapPin, Package, Calendar } from 'lucide-react';
+import Link from 'next/link';
+import { PlusCircle, Loader2, MapPin, Package, Calendar } from 'lucide-react';
 import { createShipmentAction } from '@/server/actions/shipment-actions';
+import AppHeader from '@/components/app-header';
+import Breadcrumbs from '@/components/breadcrumbs';
 
 const PRESET_HUBS = [
   { address: 'London Port Logistics', city: 'London', lat: 51.5074, lng: -0.1278 },
@@ -108,20 +110,18 @@ export default function BookShipmentPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard/shipper" className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Book Shipment</h1>
-            <p className="text-xs text-zinc-500 mt-1">Register new package delivery details</p>
-          </div>
-        </div>
-      </header>
+      <AppHeader role="shipper" />
+
+      {/* Local Context */}
+      <div className="mx-auto w-full max-w-4xl px-6 pt-6">
+        <Breadcrumbs
+          items={[{ label: 'Overview', href: '/dashboard/shipper' }, { label: 'Book shipment' }]}
+        />
+      </div>
 
       {/* Main Content */}
       <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-8">
+        <h1 className="sr-only">Book shipment</h1>
         <form onSubmit={handleSubmit} className="space-y-8">
           
           {/* Section: Recipient Details */}

@@ -1,10 +1,9 @@
-import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import { Truck, CheckCircle, Clock } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import DriverDashboardClient, { type ShipmentData } from './driver-dashboard-client';
-import Logo from '@/components/logo';
+import AppHeader from '@/components/app-header';
 import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function DriverDashboard() {
@@ -97,29 +96,14 @@ export default async function DriverDashboard() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo accent="emerald" />
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Courier Driver Portal</h1>
-            <p className="text-xs text-zinc-500 mt-1">Route navigation & GPS simulation metrics</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            DRIVER PORTAL
-          </span>
-          <UserButton />
-        </div>
-      </header>
+      <AppHeader role="driver" />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
         {/* Banner */}
         <div className="rounded-2xl p-6 bg-linear-to-r from-emerald-900/20 via-zinc-900/50 to-zinc-900/50 border border-emerald-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold font-outfit text-white">Real-time Delivery Sim</h2>
+            <h1 className="text-2xl font-bold font-outfit text-white">Real-time Delivery Sim</h1>
             <p className="text-sm text-zinc-400 max-w-xl">
               Claim available jobs, update package statuses as you progress, and stream live coordinate updates to recipients.
             </p>

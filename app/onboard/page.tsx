@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+import { useUser, UserButton } from '@clerk/nextjs';
 import { selectUserRoleAction, ensureProfile } from '@/server/actions/auth-actions';
 import { PackagePlus, Truck, User, ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import Logo from '@/components/logo';
 
 type RoleOption = 'shipper' | 'driver' | 'recipient';
 
@@ -28,6 +30,22 @@ export default function OnboardPage() {
       </div>
     );
   }
+
+  const onboardingHeader = (
+    <header className="border-b border-[var(--color-border)] bg-[var(--color-page)]">
+      <div className="mx-auto flex h-16 w-full max-w-4xl items-center justify-between px-4 md:px-5 lg:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <Link href="/" aria-label="LiveTrack home" className="flex shrink-0 items-center rounded-[var(--radius-control)]">
+            <Logo />
+          </Link>
+          <span className="hidden shrink-0 rounded-[var(--radius-pill)] border border-[var(--color-border)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-text-subtle)] sm:inline-block">
+            Choose role
+          </span>
+        </div>
+        <UserButton />
+      </div>
+    </header>
+  );
 
   const handleSelectRole = (role: RoleOption) => {
     setSelectedRole(role);
@@ -82,7 +100,9 @@ export default function OnboardPage() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12 lg:px-8 bg-zinc-950">
+    <div className="flex min-h-screen flex-col bg-zinc-950">
+      {onboardingHeader}
+      <main className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
       <div className="w-full max-w-4xl space-y-8">
         
         {/* Header */}
@@ -151,6 +171,7 @@ export default function OnboardPage() {
         </div>
         
       </div>
+      </main>
     </div>
   );
 }

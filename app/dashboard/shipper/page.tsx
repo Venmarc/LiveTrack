@@ -1,4 +1,3 @@
-import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { Package, PlusCircle, TrendingUp, AlertTriangle, ArrowRight, User } from 'lucide-react';
@@ -6,7 +5,7 @@ import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { SeedButton } from '@/components/seed-button';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
-import Logo from '@/components/logo';
+import AppHeader from '@/components/app-header';
 import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function ShipperDashboard() {
@@ -97,28 +96,14 @@ export default async function ShipperDashboard() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo />
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Shipper Portal</h1>
-            <p className="text-xs text-zinc-500 mt-1">Manage outbound packages and logistics flows</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            DEMO MODE
-          </span>
-          <UserButton />
-        </div>
-      </header>
+      <AppHeader role="shipper" />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
         {/* Banner */}
         <div className="rounded-2xl p-6 bg-linear-to-r from-blue-900/20 via-zinc-900/50 to-zinc-900/50 border border-blue-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold font-outfit text-white">Create a New Shipment</h2>
+            <h1 className="text-2xl font-bold font-outfit text-white">Create a New Shipment</h1>
             <p className="text-sm text-zinc-400 max-w-xl">
               Register package details, define waypoint origins/destinations on Leaflet maps, and assign couriers to begin GPS updates.
             </p>
@@ -163,7 +148,7 @@ export default async function ShipperDashboard() {
         </div>
 
         {/* Shipments List */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
+        <div id="my-shipments" className="scroll-mt-24 rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
           <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between">
             <h3 className="font-bold text-white font-outfit">My Shipments</h3>
             <span className="text-xs text-zinc-500">{shipmentList.length} shipments found</span>

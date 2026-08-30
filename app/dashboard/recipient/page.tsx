@@ -1,11 +1,10 @@
-import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import { Package, Calendar, Bell, ArrowRight, User } from 'lucide-react';
 import { ensureProfile } from '@/server/actions/auth-actions';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { TrackingSearch } from '@/components/tracking-search';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
-import Logo from '@/components/logo';
+import AppHeader from '@/components/app-header';
 import { RoleOnboarding } from '@/components/role-onboarding';
 
 export default async function RecipientDashboard() {
@@ -111,28 +110,14 @@ export default async function RecipientDashboard() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo accent="indigo" />
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Recipient Portal</h1>
-            <p className="text-xs text-zinc-500 mt-1">Track inbound packages and deliveries</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            CUSTOMER ACCOUNT
-          </span>
-          <UserButton />
-        </div>
-      </header>
+      <AppHeader role="recipient" />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
         {/* Search Tracker Banner */}
         <div className="rounded-2xl p-6 bg-linear-to-r from-indigo-900/20 via-zinc-900/50 to-zinc-900/50 border border-indigo-500/10 space-y-4">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold font-outfit text-white">Track any shipment ID</h2>
+            <h1 className="text-2xl font-bold font-outfit text-white">Track any shipment ID</h1>
             <p className="text-sm text-zinc-400">
               Enter your tracking number below to view the Leaflet tracking map, real-time vehicle simulation, and statuses.
             </p>
@@ -171,7 +156,7 @@ export default async function RecipientDashboard() {
         </div>
 
         {/* Inbound Shipments Table */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
+        <div id="my-packages" className="scroll-mt-24 rounded-2xl border border-zinc-900 bg-zinc-900/10 overflow-hidden">
           <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between">
             <h3 className="font-bold text-white font-outfit">My Packages</h3>
             <span className="text-xs text-zinc-500">{shipmentList.length} shipments found</span>

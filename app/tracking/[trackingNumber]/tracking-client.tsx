@@ -13,12 +13,12 @@ import {
   CheckCircle2, 
   Clock, 
   AlertTriangle,
-  ArrowLeft,
   Navigation,
   Loader2
 } from 'lucide-react';
-import Link from 'next/link';
 import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
+import PublicHeader from '@/components/public-header';
+import Breadcrumbs from '@/components/breadcrumbs';
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/lib/database.types';
 
@@ -218,22 +218,18 @@ export default function TrackingClient({
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/" aria-label="Back to home" className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition cursor-pointer">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div>
-            <h1 className="text-xl font-bold font-outfit text-white leading-none">Public Shipment Tracker</h1>
-            <p className="text-xs text-zinc-400 mt-1">Live updates via Supabase Realtime</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs sm:text-xs font-semibold px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            PUBLIC ACCESS
-          </span>
-        </div>
-      </header>
+      <PublicHeader />
+
+      {/* Local Context */}
+      <div className="mx-auto w-full max-w-7xl px-6 pt-6">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Track shipment', href: '/#track-shipment' },
+            { label: liveShipment.tracking_number },
+          ]}
+        />
+      </div>
 
       {/* Main Grid */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid gap-8 lg:grid-cols-3">
@@ -245,7 +241,7 @@ export default function TrackingClient({
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-xs uppercase font-bold tracking-wider text-zinc-400">Tracking Code</span>
+                <h1 className="text-xs uppercase font-bold tracking-wider text-zinc-400">Tracking Code</h1>
                 <div className="mt-0.5">
                   <CopyableTrackingNumber value={liveShipment.tracking_number} className="text-xl sm:text-2xl font-bold tracking-wide" />
                 </div>

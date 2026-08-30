@@ -17,7 +17,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "LiveTrack — Real-time Package Logistics Tracking Platform",
-  description: "Enterprise-grade real-time package tracker with simulation controls, live maps, and instant courier status alerts.",
+  description: "Portfolio demonstration of a real-time shipment workflow with simulated route updates, live maps, and role-based views.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${outfit.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100 font-sans">
+      <body className="min-h-full flex flex-col bg-[var(--color-page)] text-[var(--color-text)] font-sans">
         <Providers>
           <main className="grow flex flex-col">
             <DemoBanner />

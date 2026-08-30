@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { CopyableTrackingNumber } from '@/components/copyable-tracking-number';
+import AppHeader from '@/components/app-header';
+import Breadcrumbs from '@/components/breadcrumbs';
 import { 
-  ArrowLeft, 
   MapPin, 
   Package, 
   Calendar, 
@@ -76,27 +75,6 @@ type FilterType = 'all' | 'milestones' | 'transit' | 'alerts';
 export default function ShipmentDetailsClient({ shipment, events }: Props) {
   const [filter, setFilter] = useState<FilterType>('all');
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">Pending</span>;
-      case 'assigned':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-950/40 text-blue-400 border border-blue-500/20">Assigned</span>;
-      case 'picked_up':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-950/40 text-cyan-400 border border-cyan-500/20">Picked Up</span>;
-      case 'in_transit':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-950/40 text-emerald-500 border border-emerald-500/20">In Transit</span>;
-      case 'delivered':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-950/40 text-green-500 border border-green-500/20">Delivered</span>;
-      case 'delayed':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-500 border border-amber-500/20">Delayed</span>;
-      case 'cancelled':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-950/40 text-rose-500 border border-rose-500/20">Cancelled</span>;
-      default:
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-400 border border-zinc-800">{status}</span>;
-    }
-  };
-
   // Filter logic
   const filteredEvents = events.filter((evt) => {
     if (filter === 'all') return true;
@@ -115,29 +93,22 @@ export default function ShipmentDetailsClient({ shipment, events }: Props) {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
       {/* Header */}
-      <header className="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/dashboard/shipper" 
-            className="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold font-outfit text-white leading-none">Shipment Status</h1>
-              {getStatusBadge(shipment.status)}
-            </div>
-            <div className="text-xs text-zinc-400 mt-1.5 flex items-center gap-1.5">
-              <span>Tracking Number:</span>
-              <CopyableTrackingNumber value={shipment.tracking_number} />
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader role="shipper" />
+
+      {/* Local Context */}
+      <div className="mx-auto w-full max-w-7xl px-6 pt-6">
+        <Breadcrumbs
+          items={[
+            { label: 'Overview', href: '/dashboard/shipper' },
+            { label: 'Shipments', href: '/dashboard/shipper#my-shipments' },
+            { label: shipment.tracking_number },
+          ]}
+        />
+      </div>
 
       {/* Main Grid */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid gap-8 lg:grid-cols-3">
+        <h1 className="sr-only">Shipment {shipment.tracking_number} status</h1>
         
         {/* Left Column: Shipment Details & Locations */}
         <div className="lg:col-span-2 space-y-8">

@@ -1,8 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #09090b;
-  --foreground: #f4f4f5;
+  --color-graphite-950: #0b0d0f;
+  --color-graphite-900: #111417;
+  --color-graphite-850: #171b1f;
+  --color-graphite-800: #20262b;
+  --color-graphite-700: #30383f;
+  --color-graphite-600: #46515a;
+  --color-ink-100: #f4f1e9;
+  --color-ink-200: #d5d6d1;
+  --color-ink-300: #a7aca8;
+  --color-ink-400: #7d8581;
+  --color-route-500: #f28a24;
+  --color-route-400: #ffad52;
+  --color-success-500: #6fbe79;
+  --color-warning-500: #e9b949;
+  --color-danger-500: #ed766c;
+  --color-map-500: #6ea8d8;
+
+  --background: var(--color-graphite-950);
+  --foreground: var(--color-ink-100);
+  --color-page: var(--color-graphite-950);
+  --color-surface: var(--color-graphite-900);
+  --color-surface-raised: var(--color-graphite-850);
+  --color-surface-hover: var(--color-graphite-800);
+  --color-text: var(--color-ink-100);
+  --color-text-muted: var(--color-ink-200);
+  --color-text-subtle: var(--color-ink-300);
+  --color-text-placeholder: var(--color-ink-400);
+  --color-border: var(--color-graphite-700);
+  --color-border-strong: var(--color-graphite-600);
+  --color-accent: var(--color-route-500);
+  --color-accent-hover: var(--color-route-400);
+  --color-success: var(--color-success-500);
+  --color-warning: var(--color-warning-500);
+  --color-danger: var(--color-danger-500);
+  --color-map: var(--color-map-500);
+  --color-focus: var(--color-route-400);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-control: 4px;
+  --radius-panel: 8px;
+  --radius-pill: 999px;
+  --layer-sticky: 10;
+  --layer-dropdown: 20;
+  --layer-modal-backdrop: 30;
+  --layer-modal: 40;
+  --layer-toast: 50;
+  --layer-tooltip: 60;
 }
 
 @theme inline {
@@ -18,6 +72,133 @@ body {
   font-family: var(--font-sans);
 }
 
+*,
+*::before,
+*::after {
+  border-color: var(--color-border);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.lt-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.lt-control {
+  min-height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.lt-control:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-hover);
+}
+
+.lt-control:active:not(:disabled) {
+  background: var(--color-graphite-700);
+}
+
+.lt-control:disabled {
+  cursor: not-allowed;
+  color: var(--color-text-placeholder);
+  opacity: 0.65;
+}
+
+.lt-primary-action {
+  min-height: 44px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-graphite-950);
+  font-weight: 700;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out;
+}
+
+.lt-primary-action:hover:not(:disabled) {
+  border-color: var(--color-accent-hover);
+  background: var(--color-accent-hover);
+}
+
+.lt-primary-action:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.lt-primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* LiveTrack navigation */
+.lt-mobile-menu {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.35);
+}
+
+.lt-mobile-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.lt-mobile-link:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.lt-mobile-link--active {
+  border-left-color: var(--color-accent);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.lt-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.lt-nav-link:hover {
+  color: var(--color-text);
+}
+
+.lt-nav-link[aria-current='page'] {
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--color-accent);
+}
+
 /* LiveTrack map marker */
 .livetrack-marker-wrapper {
   background: transparent;
@@ -31,7 +212,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--color-ink-100);
 }
 
 .livetrack-marker::before {
@@ -39,7 +220,7 @@ body {
   position: absolute;
   inset: -4px;
   border-radius: 9999px;
-  background: rgba(59, 130, 246, 0.35);
+  background: color-mix(in srgb, var(--color-map) 35%, transparent);
   animation: livetrack-pulse 2s ease-out infinite;
 }
 
@@ -48,7 +229,7 @@ body {
   z-index: 1;
   width: 22px;
   height: 22px;
-  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.9));
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-map) 90%, transparent));
 }
 
 @keyframes livetrack-pulse {
@@ -66,15 +247,26 @@ body {
   width: 14px;
   height: 14px;
   border-radius: 9999px;
-  border: 3px solid #09090b;
+  border: 3px solid var(--color-page);
 }
 
 .livetrack-endpoint--origin {
-  background: #10b981;
-  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.5);
+  background: var(--color-success);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-success) 50%, transparent);
 }
 
 .livetrack-endpoint--destination {
-  background: #6366f1;
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.5);
+  background: var(--color-map);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-map) 50%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
