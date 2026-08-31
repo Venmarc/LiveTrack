@@ -1473,7 +1473,7 @@ check('green tiles loaded', (await page.$$eval('img.leaflet-tile', (tiles) => ti
 check('opentopomap attribution', (await page.getAttribute('.leaflet-control-attribution a[href*="opentopomap"], .leaflet-control-attribution a[href*="esri"]', 'href')) !== null);
 check('route polylines exist', (await page.$$('path[stroke="#f28a24"]')).length >= 2);
 
-const markerStyle = () => page.$eval('.livetrack-marker-wrapper', (el) => el.style.transform);
+const markerStyle = () => page.$eval('.livetrack-marker-wrapper:has(.livetrack-marker--route)', (el) => el.style.transform);
 const t0 = await markerStyle();
 await page.waitForTimeout(5000);
 const t1 = await markerStyle();
@@ -1582,7 +1582,7 @@ Expected: lint zero errors (pre-existing warnings acceptable), typecheck clean, 
 If any audit check fails, diagnose the root cause, fix the component (not the check, unless the check itself is wrong), re-run the full audit until all checks pass, and commit the fix:
 
 ```bash
-git add -A
+git add app components lib
 git commit -m "fix: landing audit findings"
 ```
 
