@@ -59,7 +59,7 @@ The hero pill badge (emoji + "SaaS Logistics Simulation Demo Platform") is remov
 
 **Camera.** Fit to route bounds on load, then static. No camera follow.
 
-**Live demo status line.** Text under the input, tabular numerals, computed from real route data: `In transit · 62 km/h · 47 km to Birmingham`. Never invented values.
+**Live demo status line.** Text under the input, tabular numerals, computed from real route data: `In transit · 47 km to Birmingham · 63% of route`. No speed value: the demo compresses 189.5 km into 60 s (~11,370 km/h real), so any shown speed is either absurd or invented. Distance-to-go and completion percent are real.
 
 **Map FSM:** `loading → ready → running → delivered → (restart) running`. With `prefers-reduced-motion: reduce`: skip `running`; static truck at a fixed point; full route drawn; status line still updates as text.
 
@@ -93,7 +93,7 @@ Operational voice per DESIGN.md. No "unlock", "next-generation", "enterprise-gra
 - H1: `Watch freight move, door to door.`
 - Subtext: `LiveTrack simulates dispatch, GPS telemetry, and live maps. Follow a delivery from depot to doorstep.`
 - How it works stops: `Dispatch — a shipper books the load.` / `Transit — the engine streams GPS, speed, and heading.` / `Delivery — the recipient follows every mile, no account needed.`
-- Try-it intro: `These shipments are moving on the demo engine right now. Open one.`
+- Try-it intro: `Real shipments from the demo engine. Open one to follow its route.` Each chip shows its true status label (In transit / Delayed / Delivered) with a status dot and text — color never carries meaning alone. Statuses are fetched server-side at request time (`revalidate = 30`) so chips never lie about a shipment's state.
 
 ## Tokens And Styles
 
